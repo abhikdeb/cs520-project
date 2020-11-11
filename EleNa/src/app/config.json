@@ -1,0 +1,13 @@
+{
+    "app": {
+        "graphs_location": "stored_locations/"
+    },
+    "google_api": {
+        "api_key": "AIzaSyBQllgh-_DeFmp-zp7iOgP60WZxAdkPSw4",
+        "elevation_api": {
+            "add_absolute": false,
+            "batch_size": 500,
+            "precision": 3
+        }
+    }
+}
