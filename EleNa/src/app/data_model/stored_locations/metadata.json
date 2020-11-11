@@ -1,4 +1,5 @@
 {
-    "Amherst, MA": "stored_locations/Amherst, MA.pickle",
-    "Hadley, MA": "stored_locations/Hadley, MA.pickle"
+    "Amherst, MA": "./app/data_model/stored_locations/6948849649408888148.pickle",
+    "Hadley, MA": "./app/data_model/stored_locations/2950898548115861763.pickle",
+    "Northampton, MA": "./app/data_model/stored_locations/6929832170970528235.pickle"
 }
