@@ -1,4 +1,5 @@
-from app import app
+from EleNa.src.app import app
+
 
 @app.route('/')
 @app.route('/index')
