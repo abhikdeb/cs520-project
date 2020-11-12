@@ -1,7 +1,9 @@
 import networkx as nx
 import osmnx as ox
 import matplotlib.pyplot as plt
-
+import operator
+import numpy as np
+from queue import PriorityQueue
 from data_model import DataModel
 
 def find_path_edges(graph, path, min_weight='grade'):
@@ -44,29 +46,101 @@ def find_path_edges(graph, path, min_weight='grade'):
 
 
 class Routing:
-    def __init__(self):
-        data_model = DataModel()
-        self.G = data_model.get_graph()
+    def __init__(self, data_model):
+        self.data_model = data_model
+        self.G = self.data_model.get_graph()
         self.start = None
         self.end = None
+
+        # hardcoded: to be removed later
+        start_loc=(42.35042, -72.52712)
+        end_loc=(42.40791, -72.53425)
+        self.set_start_end(start_loc, end_loc)
+
 
     def plot_route(self, route):
         fig, ax = ox.plot_graph_route(self.G, route, route_linewidth=6, node_size=0, bgcolor='k')
         plt.show()
 
-    def get_start_end(self, start_loc=(42.35042, -72.52712), end_loc=(42.40791, -72.53425)):
-        self.start = ox.get_nearest_node(self.G, start_loc)
-        self.end = ox.get_nearest_node(self.G, end_loc)
+    def get_node(self, loc):
+        return ox.get_nearest_node(self.G, loc)
+
+    def set_start_end(self, start_loc, end_loc):
+        self.start = self.get_node(start_loc)
+        self.end = self.get_node(end_loc)
+
+
+    def get_shortest_path_length(self):
+        '''
+            arguments: start and end locations
+            returns: the shortest path length between the start and the end nodes
+            Note: it can also be modified to return the path as list of nodes using backtrace()
+            credits: https://github.com/blkrt/dijkstra-python
+        '''
+
+        def backtrace(previous, start, end):
+            '''
+                returns the shortest path between start and end as a list of nodes
+            '''
+            node = end
+            path = []
+            while node != start:
+                path.append(node)
+                node = previous[node]
+            path.append(node) 
+            path.reverse()
+            return path
+
+        def get_shortest_edge_length(node1, node2):
+            '''
+                returns the length of the shortest edge between a pair of neighboring nodes
+            '''
+            edges = self.G.get_edge_data(node1, node2)
+            if len(edges.keys()) == 1:
+                return edges[0]['length']
+
+            edge_to_len = {}  
+            for key in edges.keys():
+                edge_to_len[key] = edges[key]['length']
+            min_key = min(edge_to_len, key=edge_to_len.get)
+            return edges[min_key]['length']
+
+
+        previous = {}
+        distance = {v: np.inf for v in list(self.G.nodes())}
+        visited = set()
+        pq = PriorityQueue()
+        distance[self.start] = 0
+        pq.put((distance[self.start], self.start))
+
+        while pq.qsize():
+            dist, node = pq.get()
+            visited.add(node)
+            # print('Visiting {}'.format(node))
+
+            for nbr in dict(self.G.adjacency()).get(node):
+                edge_length = get_shortest_edge_length(node, nbr)
+                # print(edge_length)
+                path_length = distance[node] + edge_length
+                if path_length < distance[nbr]:
+                    distance[nbr] = path_length
+                    previous[nbr] = node
+                    if nbr not in visited:
+                        visited.add(nbr)
+                        pq.put((distance[nbr], nbr))
+                    else:
+                        _, _ = pq.get((distance[nbr], nbr))
+                        pq.put((distance[nbr], nbr))
+
+        shortest_path = backtrace(previous, self.start, self.end) # shortest path with the list of intermediate nodes
+        # print(shortest_path)
+        return distance[self.end] 
+
+        
 
     def get_shortest_path(self):
-        # ToDo : Videsh
         self.get_start_end()
 
-        # returns a list of nodes
-        # path = nx.shortest_path(self.G, self.start, self.end, weight='length')
-        # print('Path == ')
-        # print(path)
-        # self.plot_route(path)
         return self.minimize_elevation_gain_ML(self.G, self.start, self.end, 1.5)
 
     def minimize_elevation_gain_ML(self, graph, source, target, percent_shortest_path):
