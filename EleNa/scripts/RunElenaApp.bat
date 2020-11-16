@@ -1,5 +1,5 @@
 @ECHO OFF
-cd "D:/UMass/Fall20/520/project/cs520-project/EleNa/src"
+cd "../src"
 setlocal
 set FLASKAPP="elena_app.py"
 flask run

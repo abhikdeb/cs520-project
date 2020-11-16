@@ -1,6 +1,7 @@
 {
     "app": {
-        "graphs_location": "./app/data_model/stored_locations/"
+        "graphs_location": "./app/data_model/stored_locations/",
+        "security_key" : "a-password-that-cannot-be-guessed"
     },
     "google_api": {
         "api_key": "AIzaSyBQllgh-_DeFmp-zp7iOgP60WZxAdkPSw4",
