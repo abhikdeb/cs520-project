@@ -13,3 +13,4 @@ class Config(object):
         cfg_file.close()
 
     SECRET_KEY = os.environ.get('SECRET_KEY') or cfg.get('app')['security_key']
+    API_KEY = cfg.get('google_api')['api_key']

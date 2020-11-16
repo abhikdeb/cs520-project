@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 
-{% block content %}
-{% from "_formhelpers.html" import render_field %}
+{% block head %}
+    {{map_view.js}}
+{% endblock %}
 
-    <br>
+
+{% block content %}
+    <h3>Select source and destination :</h3>
+
+    <div id="map">{{map_view.html}}</div>
+
 
 {% endblock %}
