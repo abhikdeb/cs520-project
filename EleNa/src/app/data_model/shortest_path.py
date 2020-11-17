@@ -150,7 +150,7 @@ class Routing:
         # exhaustive
         return self.minimize_elevation_gain(self.G, self.start, self.end, 1.5)
 
-    def minimize_elevation_gain_ML(self, graph, source, target, percent_shortest_path):
+    def minimize_elevation_gain_ML(self, percent_shortest_path):
         """
         TODO : Modify this code !!
         Minimizes grade gain within constraint of x% of the shortest path by 
@@ -196,15 +196,15 @@ class Routing:
             raise Exception("Cannot find a path shorter than the shortest path.")
 
         # Find shortest distance path
-        min_dist, min_dist_path = nx.single_source_dijkstra(graph, source, target, weight='length')
-        _, min_dist_grade, min_dist_keys = find_path_edges(graph, min_dist_path, min_weight='length')
+        min_dist, min_dist_path = nx.single_source_dijkstra(self.G, self.start, self.end, weight='length')
+        _, min_dist_grade, min_dist_keys = find_path_edges(self.G, min_dist_path, min_weight='length')
         # Set maximum distance willing to travel
         max_dist = min_dist * percent_shortest_path
 
         # Find total distance and grade gain of the edges for normalization
         total_dist = 0
         total_grade = 0
-        for u, v, data in graph.edges(data=True):
+        for u, v, data in self.G.edges(data=True):
             total_dist += data['length']
             total_grade += data['grade']
 
@@ -226,14 +226,14 @@ class Routing:
             # of normalized distances and grade gains
 
             ## TODO  figure out a way to normalize weights
-            for u, v, k, data in graph.edges(keys=True, data=True):
-                graph.add_edge(u, v, key=k, grade=
+            for u, v, k, data in self.G.edges(keys=True, data=True):
+                self.G.add_edge(u, v, key=k, grade=
                 alpha * data['grade'] +
                 (1 - alpha) * data['length'])
 
             # Find shortest path for new grade
-            path = nx.shortest_path(graph, source, target, weight='grade')
-            path_length, path_grade, path_keys = find_path_edges(graph, path)
+            path = nx.shortest_path(self.G, self.start, self.end, weight='grade')
+            path_length, path_grade, path_keys = find_path_edges(self.G, path)
 
             # If the path found has a shorter distance than the max, 
             if path_length <= max_dist:
@@ -290,25 +290,25 @@ class Routing:
         self.paths = list(nx.all_simple_paths(graph, source, target, cutoff_dist))
         self.paths_with_stats = []
 
-        for path in paths:
-            self.paths_with_stats.append([get_length_of_path(path), get_elevation_of_path(path), path])
+        for path in self.paths:
+            self.paths_with_stats.append([self.get_length_of_path(path), self.get_elevation_of_path(path), path])
 
-    def minimize_elevation_gain(self, graph, source, target, percent_shortest_path):
+    def minimize_elevation_gain(self, percent_shortest_path):
 
         # TODO: Replace with videsh algo (replace shortest path length)
-        shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
+        shortest_path_len = nx.shortest_path_length(self.G, self.start, self.end, 'length')
         cutoff_dist = shortest_path_len * percent_shortest_path
 
-        self.get_all_paths(graph, source, target, cutoff_dist)
+        self.get_all_paths(self.G, self.start, self.end, cutoff_dist)
         return min(self.paths_with_stats, key=lambda x: x[1])
 
-    def maximize_elevation_gain(self, graph, source, target, percent_shortest_path):
+    def maximize_elevation_gain(self, percent_shortest_path):
 
         # TODO: Replace with videsh algo (replace shortest path length)
 
-        shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
+        shortest_path_len = nx.shortest_path_length(self.G, self.start, self.end, 'length')
         cutoff_dist = shortest_path_len * percent_shortest_path
 
-        self.get_all_paths(graph, source, target, cutoff_dist)
+        self.get_all_paths(self.G, self.start, self.end, cutoff_dist)
         return max(self.paths_with_stats, key=lambda x: x[1])
 
