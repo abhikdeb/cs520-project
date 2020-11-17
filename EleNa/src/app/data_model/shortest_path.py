@@ -145,6 +145,7 @@ class Routing:
 
     def minimize_elevation_gain_ML(self, graph, source, target, percent_shortest_path):
         """
+        TODO : Modify this code !!
         Minimizes grade gain within constraint of x% of the shortest path by 
         performing a linear search over alpha(between 1.0 and 0.0) such that each 
         iteration calculates a new weight for every edge as the linear combination
@@ -238,12 +239,38 @@ class Routing:
             return (max_dist - path_length)**2
         
     #     a = minimize_scalar(minimize_alpha)
-        a = minimize(minimize_alpha, 1)
+        a = minimize(minimize_alpha, 1, max_iter = 20)
 
         # Return the lowest grade gain within max distance
         best_path = min(paths_found, key=lambda d: d['grade'])
         best_path_dist = best_path['length']
         best_path_gain = best_path['grade']
 
-        return (best_path_dist, best_path_gain)
+        return [best_path_dist, best_path_gain, best_path]
 
+    def get_all_paths(self, graph, source, target, cutoff_dist):
+    	self.paths = list(nx.all_simple_paths(graph, source, target, cutoff_dist))
+    	# self.paths #[[length, elevation_gain, [path]]]
+
+
+    def minimize_elevation_gain(self, graph, source, target, percent_shortest_path):
+
+    	# TODO: Replace with videsh algo (replace shortest path length)
+    	shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
+    	cutoff_dist = shortest_path_len * percent_shortest_path
+
+    	self.get_all_paths(graph, source, target, cutoff_dist)
+    	self.paths.min(key = lambda x: x[1])
+    	return self.paths[0]
+
+
+    def maximize_elevation_gain(self, graph, source, target, percent_shortest_path):
+
+    	# TODO: Replace with videsh algo (replace shortest path length)
+
+    	shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
+    	cutoff_dist = shortest_path_len * percent_shortest_path
+
+    	self.get_all_paths(graph, source, target, cutoff_dist)
+    	self.paths.max(key = lambda x: x[1])
+    	return self.paths[0]
