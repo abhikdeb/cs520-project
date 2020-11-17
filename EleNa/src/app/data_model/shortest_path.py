@@ -152,7 +152,7 @@ class Routing:
 		elif mode == 'minimize':
 			return self.minimize_elevation_gain_ML(1.9)
 		elif mode == 'maximize':
-			return self.maximize_elevation_gain_ML(3)
+			return self.maximize_elevation_gain_ML(1.9)
 
 		# exhaustive
 		# return self.minimize_elevation_gain(1.5)
@@ -230,7 +230,7 @@ class Routing:
 			
 			for u, v, k, data in self.G.edges(keys=True, data=True):
 				G_processed.add_edge(u, v, key=k, grade=
-				max(0, alpha * data['grade'] * data['length']) +
+				max(0, alpha * data['grade']*data['length']) +
 				(1 - alpha) * data['length'])
 
 			# Find shortest path for new grade
@@ -296,7 +296,7 @@ class Routing:
 		def minimize_alpha(alpha):
 			for u, v, k, data in self.G.edges(keys=True, data=True):
 				G_processed.add_edge(u, v, key=k, grade=
-				max(0, (1-alpha) * data['grade'] * data['length']) + (alpha) * data['length'])
+				max(0, (1-alpha) / (1e-6 + data['grade'])) + (alpha) / (1e-6 + data['length']))
 
 			# Find shortest path for new grade
 			path = ox.distance.shortest_path(G_processed, self.start, self.end, weight='grade')
