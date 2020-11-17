@@ -5,6 +5,8 @@ import operator
 import numpy as np
 from queue import PriorityQueue
 from data_model import DataModel
+from scipy.optimize import minimize, minimize_scalar
+
 
 def find_path_edges(graph, path, min_weight='grade'):
     """
@@ -32,7 +34,7 @@ def find_path_edges(graph, path, min_weight='grade'):
     path_edge_keys: list of int
         Each int represents the key of the edge between two consecutive nodes 
         in path which minimizes min_weight.        
-    """    
+    """
     path_length = 0
     path_ele_gain = 0
     path_edge_keys = []
@@ -51,12 +53,13 @@ class Routing:
         self.G = self.data_model.get_graph()
         self.start = None
         self.end = None
+        self.paths = None
+        self.paths_with_stats = None
 
         # hardcoded: to be removed later
-        start_loc=(42.35042, -72.52712)
-        end_loc=(42.40791, -72.53425)
+        start_loc = (42.35042, -72.52712)
+        end_loc = (42.40791, -72.53425)
         self.set_start_end(start_loc, end_loc)
-
 
     def plot_route(self, route):
         fig, ax = ox.plot_graph_route(self.G, route, route_linewidth=6, node_size=0, bgcolor='k')
@@ -68,7 +71,6 @@ class Routing:
     def set_start_end(self, start_loc, end_loc):
         self.start = self.get_node(start_loc)
         self.end = self.get_node(end_loc)
-
 
     def get_shortest_path_length(self):
         '''
@@ -87,7 +89,7 @@ class Routing:
             while node != start:
                 path.append(node)
                 node = previous[node]
-            path.append(node) 
+            path.append(node)
             path.reverse()
             return path
 
@@ -99,12 +101,11 @@ class Routing:
             if len(edges.keys()) == 1:
                 return edges[0]['length']
 
-            edge_to_len = {}  
+            edge_to_len = {}
             for key in edges.keys():
                 edge_to_len[key] = edges[key]['length']
             min_key = min(edge_to_len, key=edge_to_len.get)
             return edges[min_key]['length']
-
 
         previous = {}
         distance = {v: np.inf for v in list(self.G.nodes())}
@@ -132,16 +133,22 @@ class Routing:
                         _, _ = pq.get((distance[nbr], nbr))
                         pq.put((distance[nbr], nbr))
 
-        shortest_path = backtrace(previous, self.start, self.end) # shortest path with the list of intermediate nodes
+        shortest_path = backtrace(previous, self.start, self.end)  # shortest path with the list of intermediate nodes
         # print(shortest_path)
-        return distance[self.end] 
-
-        
+        return distance[self.end]
 
     def get_shortest_path(self):
-        self.get_start_end()
+        # call when entered from UI
+        # self.set_start_end()
 
-        return self.minimize_elevation_gain_ML(self.G, self.start, self.end, 1.5)
+        # Baseline
+        # path = nx.shortest_path(self.G, self.start, self.end, weight='length')
+
+        # ML
+        # return self.minimize_elevation_gain_ML(self.G, self.start, self.end, 1.5)
+
+        # exhaustive
+        return self.minimize_elevation_gain(self.G, self.start, self.end, 1.5)
 
     def minimize_elevation_gain_ML(self, graph, source, target, percent_shortest_path):
         """
@@ -213,33 +220,31 @@ class Routing:
         # size alpha/iterations to evenly sample between 0 and 1. If the path is
         # shorter than the maximum distance, save it, and select the shortest
         # grade gain among all paths saved
-        
-        
+
         def minimize_alpha(alpha):
-            print(alpha)
             # Create new grades based on binary search of linear combination
             # of normalized distances and grade gains
 
             ## TODO  figure out a way to normalize weights
             for u, v, k, data in graph.edges(keys=True, data=True):
-                    graph.add_edge(u, v, key = k, grade = 
-                                  alpha*data['grade'] +
-                                  (1-alpha)*data['length'])
+                graph.add_edge(u, v, key=k, grade=
+                alpha * data['grade'] +
+                (1 - alpha) * data['length'])
 
             # Find shortest path for new grade
             path = nx.shortest_path(graph, source, target, weight='grade')
             path_length, path_grade, path_keys = find_path_edges(graph, path)
 
             # If the path found has a shorter distance than the max, 
-            if path_length <= max_dist:            
+            if path_length <= max_dist:
                 # Add it to the list of paths to pick from
-                paths_found.append({'path': path, 'length': path_length, 
+                paths_found.append({'path': path, 'length': path_length,
                                     'grade': path_grade, 'keys': path_keys})
-                    
-            return (max_dist - path_length)**2
-        
-    #     a = minimize_scalar(minimize_alpha)
-        a = minimize(minimize_alpha, 1, max_iter = 20)
+
+            return (max_dist - path_length) ** 2
+
+        #     a = minimize_scalar(minimize_alpha)
+        a = minimize(minimize_alpha, 0.9)
 
         # Return the lowest grade gain within max distance
         best_path = min(paths_found, key=lambda d: d['grade'])
@@ -248,29 +253,62 @@ class Routing:
 
         return [best_path_dist, best_path_gain, best_path]
 
-    def get_all_paths(self, graph, source, target, cutoff_dist):
-    	self.paths = list(nx.all_simple_paths(graph, source, target, cutoff_dist))
-    	# self.paths #[[length, elevation_gain, [path]]]
+    def get_elevation_of_path(self, path):
+        elevation_cost = 0
+        if not path:
+            return 0
+        for i in range(len(path) - 1):
+            nodeA = path[i]
+            nodeB = path[i + 1]
 
+            # method 1: using node_info
+            elevation_data = self.G.nodes[nodeB]['elevation'] - self.G.nodes[nodeA]['elevation']
+
+            # method 2: using edge_info
+            # edge_data = self.G.edges[nodeA, nodeB, 0]
+            # elevation_data = edge_data['grade'] * edge_data['length']
+
+            if elevation_data > 0:
+                elevation_cost += elevation_data
+        return elevation_cost
+
+    def get_length_of_path(self, path):
+        length_cost = 0
+        if not path:
+            return 0
+        for i in range(len(path) - 1):
+            nodeA = path[i]
+            nodeB = path[i + 1]
+
+            edge_data = self.G.edges[nodeA, nodeB, 0]
+            length_cost += edge_data['length']
+
+        return length_cost
+
+    def get_all_paths(self, graph, source, target, cutoff_dist):
+        # [[length, elevation_gain, [path]]]
+        self.paths = list(nx.all_simple_paths(graph, source, target, cutoff_dist))
+        self.paths_with_stats = []
+
+        for path in paths:
+            self.paths_with_stats.append([get_length_of_path(path), get_elevation_of_path(path), path])
 
     def minimize_elevation_gain(self, graph, source, target, percent_shortest_path):
 
-    	# TODO: Replace with videsh algo (replace shortest path length)
-    	shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
-    	cutoff_dist = shortest_path_len * percent_shortest_path
+        # TODO: Replace with videsh algo (replace shortest path length)
+        shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
+        cutoff_dist = shortest_path_len * percent_shortest_path
 
-    	self.get_all_paths(graph, source, target, cutoff_dist)
-    	self.paths.min(key = lambda x: x[1])
-    	return self.paths[0]
-
+        self.get_all_paths(graph, source, target, cutoff_dist)
+        return min(self.paths_with_stats, key=lambda x: x[1])
 
     def maximize_elevation_gain(self, graph, source, target, percent_shortest_path):
 
-    	# TODO: Replace with videsh algo (replace shortest path length)
+        # TODO: Replace with videsh algo (replace shortest path length)
 
-    	shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
-    	cutoff_dist = shortest_path_len * percent_shortest_path
+        shortest_path_len = nx.shortest_path_length(graph, source, target, 'length')
+        cutoff_dist = shortest_path_len * percent_shortest_path
 
-    	self.get_all_paths(graph, source, target, cutoff_dist)
-    	self.paths.max(key = lambda x: x[1])
-    	return self.paths[0]
+        self.get_all_paths(graph, source, target, cutoff_dist)
+        return max(self.paths_with_stats, key=lambda x: x[1])
+
