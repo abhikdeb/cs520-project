@@ -16,7 +16,7 @@ def find_path_edges_min(graph, path, min_weight='grade'):
 	path_edge_keys = []
 	for i in range(len(path) - 1):
 		edges = graph[path[i]][path[i + 1]]
-		min_weight_edge = min(edges.keys(), key=lambda k: edges[k][min_weight])
+		min_weight_edge = min(edges.keys(), key=lambda k: edges[k][min_weight]*edges[k]['length'])
 		path_length += edges[min_weight_edge]['length']
 		path_ele_gain += max(0, edges[min_weight_edge]['grade']*edges[min_weight_edge]['length'])
 		path_edge_keys.append(min_weight_edge)
@@ -35,13 +35,13 @@ def find_path_edges(graph, path, min_weight='grade'):
 	return (path_length, path_ele_gain, path_edge_keys)
 
 ## add for max vals
-def find_path_edges_max(graph, path, min_weight='grade', real_graph = True):
+def find_path_edges_max(graph, path, min_weight='grade'):
 	path_length = 0
 	path_ele_gain = 0
 	path_edge_keys = []
 	for i in range(len(path) - 1):
 		edges = graph[path[i]][path[i + 1]]
-		min_weight_edge = max(edges.keys(), key=lambda k: edges[k][min_weight])
+		min_weight_edge = max(edges.keys(), key=lambda k: edges[k][min_weight]*edges[k]['length'])
 		path_length += edges[min_weight_edge]['length']
 		path_ele_gain += max(0, edges[min_weight_edge]['grade']*edges[min_weight_edge]['length'])
 		path_edge_keys.append(min_weight_edge)
@@ -58,7 +58,7 @@ class Routing:
 
 		# hardcoded: to be removed later
 		start_loc = (42.432121, -72.4916)
-		end_loc = (42.31338, -72.4672)
+		end_loc =  (42.31338, -72.4672) # (42.3857, -72.5298)
 		self.set_start_end(start_loc, end_loc)
 
 	def plot_route(self, route):
@@ -152,7 +152,7 @@ class Routing:
 		elif mode == 'minimize':
 			return self.minimize_elevation_gain_ML(1.9)
 		elif mode == 'maximize':
-			return self.maximize_elevation_gain_ML(1.9, temp)
+			return self.maximize_elevation_gain_ML(3, temp)
 
 		# exhaustive
 		# return self.minimize_elevation_gain(1.5)
@@ -248,7 +248,7 @@ class Routing:
 			return (max_dist - path_length) ** 2
 		s = time.time()
 		a = minimize_scalar(minimize_alpha, method = "Bounded", bounds = (0,1))
-		# a = minimize(minimize_alpha, 0.1, bounds = [(0,1)])
+		# a = minimize(minimize_alpha, 0.5, bounds = [(0,1)])
 		# a = differential_evolution(minimize_alpha, bounds = [(0, 1)])
 		print("Time taken", time.time()-s, a)
 
