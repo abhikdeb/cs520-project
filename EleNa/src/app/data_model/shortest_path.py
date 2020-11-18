@@ -249,11 +249,11 @@ class Routing:
             # If the path found has a shorter distance than the max,
             if path_length <= max_dist:
                 # Add it to the list of paths to pick from
-                print("path_length", path_length, path_grade)
+                # print("path_length", path_length, path_grade)
                 paths_found.append({'path': path, 'length': path_length,
                                     'grade': path_grade, 'keys': path_keys})
 
-            print("alpha:", alpha, "loss:", (max_dist - path_length) ** 2)
+            # print("alpha:", alpha, "loss:", (max_dist - path_length) ** 2)
             return (max_dist - path_length) ** 2
 
         s = time.time()
@@ -315,11 +315,10 @@ class Routing:
             # If the path found has a shorter distance than the max,
             if path_length <= max_dist:
                 # Add it to the list of paths to pick from
-                print("path_length", path_length, path_grade)
-
+                # print("path_length", path_length, path_grade)
                 paths_found.append({'path': path, 'length': path_length,
                                     'grade': path_grade, 'keys': path_keys})
-            print("alpha:", alpha, "loss:", (max_dist - path_length) ** 2)
+            # print("alpha:", alpha, "loss:", (max_dist - path_length) ** 2)
             return (max_dist - path_length) ** 2
 
         s = time.time()
