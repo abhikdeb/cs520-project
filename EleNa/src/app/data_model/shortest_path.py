@@ -8,6 +8,9 @@ from EleNa.src.app.data_model.data_model import DataModel
 from scipy.optimize import minimize, minimize_scalar, differential_evolution
 import time
 import copy
+import googlemaps
+
+from EleNa.src.config import Config
 
 
 def find_path_edges_min(graph, path, min_weight='grade'):
@@ -65,6 +68,8 @@ class Routing:
         end_loc = (42.31338, -72.4672)  # (42.3857, -72.5298)
         self.set_start_end(start_loc, end_loc)
 
+        self.gmap_client = googlemaps.Client(Config.API_KEY)
+
     def plot_route(self, route):
         fig, ax = ox.plot_graph_route(self.G, route, route_linewidth=6, node_size=0, bgcolor='k')
         plt.show()
@@ -78,6 +83,31 @@ class Routing:
 
     def set_max_deviation(self, x):
         self.x = x
+
+    def get_gmap_ground_truth(self, source, destination):
+        routes = self.gmap_client.directions(source, destination, mode="walking")
+        steps = routes[0]["legs"][0]["steps"]
+
+        sampled_waypoints = []
+        skip = 1
+
+        if len(steps) > 20:
+            skip = len(steps) // 20 + 1
+
+        i = 0
+        while i < len(steps) - 1:
+            sampled_waypoints.append({
+                "Lat": steps[i]["start_location"]["lat"],
+                "Long": steps[i]["start_location"]["lng"],
+            })
+            i += skip
+
+        sampled_waypoints.append({
+            "Lat": steps[len(steps) - 1]["end_location"]["lat"],
+            "Long": steps[len(steps) - 1]["end_location"]["lng"],
+        })
+
+        return sampled_waypoints
 
     def get_shortest_path_length(self):
         '''
@@ -193,7 +223,7 @@ class Routing:
             return
 
         dfs(start, 0, [], [])
-        print ("Total paths:", len(paths))
+        print("Total paths:", len(paths))
 
         min_val = sys.maxsize
         max_val = -1 * sys.maxsize

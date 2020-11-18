@@ -48,12 +48,17 @@
     function initMap() {
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
+        var directionsDisplayGroundTruth = new google.maps.DirectionsRenderer({ polylineOptions: { strokeColor: "#DF013A" } });
+
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 14,
             center: {lat: 42.3732, lng: -72.5199}
         });
+
         //Code to generate address from click
         directionsDisplay.setMap(map);
+        directionsDisplayGroundTruth.setMap(map);
+        directionsDisplayGroundTruth.setOptions({ suppressMarkers: true });
 
 
         $("#submit").click(function () {
@@ -64,12 +69,13 @@
                 encodeURIComponent($("#slider").val()) + ":" +
                 encodeURIComponent($("#flip-1").val())).done(function (data) {
 
-                alert( "Data Loaded: " + data.waypoints);
+                // alert( "Data Loaded: " + data.waypoints);
                 elevation = data.elevation
                 distance = data.distance
                 waypoints = data.waypoints
+                ground_truth = data.ground_truth
 
-                calculateAndDisplayRoute(directionsService, directionsDisplay, waypoints);
+                calculateAndDisplayRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, waypoints, ground_truth);
             })
         });
 
@@ -218,13 +224,20 @@
         });
     }
 
-    function calculateAndDisplayRoute(directionsService, directionsDisplay, checkboxArray) {
+    function calculateAndDisplayRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, checkboxArray, groundTruth) {
         var waypts = [];
-        //var checkboxArray = document.getElementById('waypoints');
         for (var i = 1; i < checkboxArray.length - 1; i++) {
             waypts.push({
                 location: new google.maps.LatLng(checkboxArray[i].Lat, checkboxArray[i].Long),
                 stopover: true
+            });
+        }
+
+        var waypts2 = [];
+        for (var i = 1; i < groundTruth.length - 1; i++) {
+            waypts2.push({
+                location: new google.maps.LatLng(groundTruth[i].Lat, groundTruth[i].Long),
+                //stopover: true
             });
         }
 
@@ -252,6 +265,21 @@
                     summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
                     summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
                 }
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
+
+        directionsService.route({
+            origin: new google.maps.LatLng(groundTruth[0].Lat, groundTruth[0].Long),
+            destination: new google.maps.LatLng(groundTruth[groundTruth.length - 1].Lat, groundTruth[groundTruth.length - 1].Long),
+            waypoints: waypts2,
+            optimizeWaypoints: true,
+            travelMode: 'WALKING'
+        }, function (response, status) {
+            if (status === 'OK') {
+                console.log("shibingok");
+                directionsDisplayGroundTruth.setDirections(response);
             } else {
                 window.alert('Directions request failed due to ' + status);
             }

@@ -69,16 +69,16 @@ def submit(data):
         data = data.replace("%20", " ")
         source, destination, percent, maxmin = data.split(":")
         source_coords = [gmaps.geocode(source)[0]['geometry']['location']['lat'],
-                    gmaps.geocode(source)[0]['geometry']['location']['lng']]
+                         gmaps.geocode(source)[0]['geometry']['location']['lng']]
         destination_coords = [gmaps.geocode(destination)[0]['geometry']['location']['lat'],
-                  gmaps.geocode(destination)[0]['geometry']['location']['lng']]
+                              gmaps.geocode(destination)[0]['geometry']['location']['lng']]
 
         print(source_coords)
         print(destination_coords)
         print(percent)
         print(maxmin)
 
-        result = get_route(source_coords, destination_coords, float(percent)/100.0, maxmin)
+        result = get_route(source_coords, destination_coords, float(percent) / 100.0, maxmin)
         print(result)
         return result
 
@@ -95,13 +95,10 @@ def get_route(source, destination, per, task):
     if len(best_path) > 20:
         skip = len(best_path) // 20 + 1
         i = 0
-        while i < len(best_path):
+        while i < len(best_path)-1:
             sampled_coords.append(best_path[i])
             i += skip
-
-    print(best_path)
-    print(sampled_coords)
-    print(log)
+        sampled_coords.append(best_path[len(best_path)-1])
 
     result = []
     for node in sampled_coords:
@@ -110,8 +107,13 @@ def get_route(source, destination, per, task):
             "Long": model_obj.get_graph().nodes[node]['x']
         })
 
-    if task == "minimize":
-        return jsonify(waypoints=result, elevation=log['best_path_gain_min'], distance=log['best_path_dist_min'])
-    else:
-        return jsonify(waypoints=result, elevation=log['best_path_gain_max'], distance=log['best_path_dist_max'])
+    gmap_route = routing_obj.get_gmap_ground_truth(source, destination)
+    print(gmap_route)
+    # gmap_route=[]
 
+    if task == "minimize":
+        return jsonify(waypoints=result, elevation=log['best_path_gain_min'], distance=log['best_path_dist_min'],
+                       ground_truth=gmap_route)
+    else:
+        return jsonify(waypoints=result, elevation=log['best_path_gain_max'], distance=log['best_path_dist_max'],
+                       ground_truth=gmap_route)

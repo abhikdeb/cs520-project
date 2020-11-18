@@ -63,7 +63,7 @@ class Evaluation:
             # get distance from Google MAps - Direction Service
             routes = self.client.directions(from_node, to_node, mode="walking")
             ground_truth = routes[0]["legs"][0]["distance"]["value"]
-            # print(json.dumps(routes, indent=4))
+            print(json.dumps(routes, indent=4))
 
             if ground_truth * self.x < log_min['best_path_dist_min']:
                 print("Elevation minimization task failed ground-truth verification for:")
