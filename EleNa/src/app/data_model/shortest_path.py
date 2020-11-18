@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import operator
 import numpy as np
 from queue import PriorityQueue
-from data_model import DataModel
+from EleNa.src.app.data_model.data_model import DataModel
 from scipy.optimize import minimize, minimize_scalar, differential_evolution
 import time
 import copy
@@ -57,6 +57,7 @@ class Routing:
         self.start = None
         self.end = None
         self.paths = None
+        self.x = 1.9
         self.paths_with_stats = None
 
         # hardcoded: to be removed later
@@ -74,6 +75,9 @@ class Routing:
     def set_start_end(self, start_loc, end_loc):
         self.start = self.get_node(start_loc)
         self.end = self.get_node(end_loc)
+
+    def set_max_deviation(self, x):
+        self.x = x
 
     def get_shortest_path_length(self):
         '''
@@ -153,9 +157,9 @@ class Routing:
             logs['min_dist_grade'] = min_dist_grade
             return path, logs
         elif mode == 'minimize':
-            return self.minimize_elevation_gain_ML(1.9)
+            return self.minimize_elevation_gain_ML(self.x)
         elif mode == 'maximize':
-            return self.maximize_elevation_gain_ML(1.9)
+            return self.maximize_elevation_gain_ML(self.x)
 
     # exhaustive
     # return self.minimize_elevation_gain(1.5)
