@@ -13,7 +13,8 @@ gmaps = Client(key=Config.API_KEY)
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-    return render_template('home.html')
+    page_title = 'Home Page'
+    return render_template('home.html', title=page_title)
 
 
 @app.route('/index', methods=['GET', 'POST'])
@@ -112,6 +113,9 @@ def get_route(source, destination, per, task):
     gmap_route = routing_obj.get_gmap_ground_truth(source, destination)
     print(gmap_route)
     # gmap_route=[]
+
+    # log
+
 
     if task == "minimize":
         return jsonify(waypoints=result, elevation=log['best_path_gain_min'], distance=log['best_path_dist_min'],

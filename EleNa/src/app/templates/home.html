@@ -1,73 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>EleNa</title>
+    <meta content="initial-scale=1.0, user-scalable=no" name="viewport">
+    <title>EleNa - {{ title }}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/stylesheet.css') }}">
+    <link href="{{ url_for('static',filename='styles/stylesheet.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
-<div id="map"></div>
-<div id="right-panel">
+<div id="map-canvas">
+    <div id="map"></div>
+</div>
+
+<div id="panel">
     <div>
         <form action="/submit" method="post" role="form">
-            <b>Enter start point or click on map:</b>
-            <input id="pac-input" name="pac-input" class="controls" type="text" placeholder="Search Box">
+            <label for="source">Starting Point </label>
+            <input class="searchfield" id="source" name="source" placeholder="Choose starting point, or click on the map"
+                   type="text">
             <br>
-            <b>Enter end point or click on map:</b>
-            <input id="pac-output" name="pac-output" class="controls" type="text" placeholder="Search Box">
+            <label for="destination">Destination </label>
+            <input class="searchfield" id="destination" name="destination" placeholder="Choose destination, or click on the map"
+                   type="text">
             <br>
-
-
-            <!-- slider -->
-
-            <div id="slidecontainer">
-                <b>Maximum percent of shortest path to travel:</b>
-                <b>100%</b>
-                <input type="range" id="slider" min="100" max="200" value="150">
-                <b>200%</b>
-            </div>
-
-            <!-- toggleswitch -->
-
-            <label for="flip-1">Elevation:</label>
-            <select name="flip-1" id="flip-1" data-role="slider">
-                <option value="maximize">Maximum</option>
-                <option value="minimize">Minimum</option>
-            </select>
+            <input class="x_percent" id="percent" max="200" min="100" name="percent" type="number" value="150">
+            <label for="percent"> % of shortest path</label>
+            <br>
+            <label>Route Optimization Type : </label>
+            <br>
+            <input id="max" name="max-min" type="radio" value="maximize">
+            <label for="max">Maximize</label>
+            <input id="min" name="max-min" type="radio" value="minimize">
+            <label for="min">Minimize</label>
         </form>
-        <input type="submit" id="submit">
+        <button class="button" id="submit" style="vertical-align:middle"><span>Get Directions </span></button>
     </div>
-    <div id="directions-panel"></div>
+    <div id="info"></div>
 </div>
 <script>
-    // + ":" + encodeURIComponent($("#switchs").val()))
-
+    let map;
 
     function initMap() {
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
-        var directionsDisplayGroundTruth = new google.maps.DirectionsRenderer({ polylineOptions: { strokeColor: "#DF013A" } });
+        var directionsDisplayGroundTruth = new google.maps.DirectionsRenderer({polylineOptions: {strokeColor: "#DF013A"}});
 
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 14,
+        var mapOptions = {
+            zoom: 15,
             center: {lat: 42.3732, lng: -72.5199}
-        });
+        }
+
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
         //Code to generate address from click
         directionsDisplay.setMap(map);
         directionsDisplayGroundTruth.setMap(map);
-        directionsDisplayGroundTruth.setOptions({ suppressMarkers: true });
+        directionsDisplayGroundTruth.setOptions({suppressMarkers: true});
 
 
         $("#submit").click(function () {
 
+            var objective;
+            var opt_type = document.getElementsByName('max-min');
+            for (i = 0; i < opt_type.length; i++) {
+                if (opt_type[i].checked) {
+                    objective = opt_type[i].value;
+                }
+            }
+
             $.get("http://127.0.0.1:5000/submit" +
-                encodeURIComponent($("#pac-input").val()) + ":" +
-                encodeURIComponent($("#pac-output").val()) + ":" +
-                encodeURIComponent($("#slider").val()) + ":" +
-                encodeURIComponent($("#flip-1").val())).done(function (data) {
+                encodeURIComponent($("#source").val()) + ":" +
+                encodeURIComponent($("#destination").val()) + ":" +
+                encodeURIComponent($("#percent").val()) + ":" +
+                encodeURIComponent(objective)).done(function (data) {
 
                 // alert( "Data Loaded: " + data.waypoints);
                 elevation = data.elevation
@@ -88,12 +93,12 @@
                     if (results[0]) {
                         document.activeElement.id.value = results[0].formatted_address;
                         //alert(results[0].formatted_address);
-                        if (!$("#pac-input").val()) {
-                            $('#pac-input').val(event.latLng);
-                            $('#pac-input').val($('#pac-input').val().slice(1, -1));
-                        } else if (!$("#pac-output").val()) {
-                            $('#pac-output').val(event.latLng);
-                            $('#pac-output').val($('#pac-output').val().slice(1, -1));
+                        if (!$("#source").val()) {
+                            $('#source').val(event.latLng);
+                            $('#source').val($('#source').val().slice(1, -1));
+                        } else if (!$("#destination").val()) {
+                            $('#destination').val(event.latLng);
+                            $('#destination').val($('#destination').val().slice(1, -1));
                         }
                     }
                 }
@@ -106,7 +111,7 @@
         //});
 
         // Create the search box and link it to the UI element.
-        var input = document.getElementById('pac-input');
+        var input = document.getElementById('source');
         var searchBox = new google.maps.places.SearchBox(input);
         //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
@@ -165,7 +170,7 @@
         });
 
         // Create the search box and link it to the UI element.
-        var input = document.getElementById('pac-output');
+        var input = document.getElementById('destination');
         var searchBox = new google.maps.places.SearchBox(input);
         //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
@@ -251,7 +256,7 @@
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
                 var route = response.routes[0];
-                var summaryPanel = document.getElementById('directions-panel');
+                var summaryPanel = document.getElementById('info');
                 summaryPanel.innerHTML = '';
                 // For each route, display summary information.
                 summaryPanel.innerHTML += '<b>Total Elevation Gain: </b>' + elevation + '<br>';
@@ -287,8 +292,9 @@
     }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQllgh-_DeFmp-zp7iOgP60WZxAdkPSw4&libraries=places&callback=initMap"
-        async defer></script>
+<script async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQllgh-_DeFmp-zp7iOgP60WZxAdkPSw4&libraries=places&callback=initMap"></script>
 
 </body>
 </body>

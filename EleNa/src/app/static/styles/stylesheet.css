@@ -1,18 +1,18 @@
-#right-panel {
+#panel {
     font-family: 'Roboto', 'sans-serif';
     line-height: 30px;
     padding-left: 10px;
 }
 
-#right-panel select, #right-panel input {
+#panel select, #panel input {
     font-size: 15px;
 }
 
-#right-panel select {
+#panel select {
     width: 100%;
 }
 
-#right-panel i {
+#panel i {
     font-size: 12px;
 }
 
@@ -22,14 +22,18 @@ html, body {
     padding: 0;
 }
 
-#map {
+#map-canvas{
     height: 100%;
     float: left;
     width: 70%;
-    height: 100%;
 }
 
-#right-panel {
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#panel {
     margin: 20px;
     border-width: 2px;
     width: 20%;
@@ -39,7 +43,7 @@ html, body {
     padding-top: 0;
 }
 
-#directions-panel {
+#info {
     margin-top: 10px;
     background-color: #FFEE77;
     padding: 10px;
@@ -63,136 +67,94 @@ html, body {
     margin-right: 12px;
 }
 
-.pac-controls {
+.searchfield {
     display: inline-block;
     padding: 5px 11px;
 }
 
-.pac-controls label {
+.searchfield label {
     font-family: Roboto;
     font-size: 13px;
     font-weight: 300;
 }
 
-#pac-input {
-    background-color: #fff;
-    font-family: Roboto;
-    font-size: 15px;
-    font-weight: 300;
-    margin-left: 12px;
-    padding: 0 11px 0 13px;
-    text-overflow: ellipsis;
-    width: 400px;
-}
-
-#pac-input:focus {
-    border-color: #4d90fe;
-}
-
-#pac-output {
-    background-color: #fff;
-    font-family: Roboto;
-    font-size: 15px;
-    font-weight: 300;
-    margin-left: 12px;
-    padding: 0 11px 0 13px;
-    text-overflow: ellipsis;
-    width: 400px;
-}
-
-#pac-output:focus {
-    border-color: #4d90fe;
-}
-
-#slidecontainer {
-    width: 100%;
-}
-
-.slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 25px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-}
-
-.slider:hover {
-    opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 25px;
-    height: 25px;
-    background: #4CAF50;
-    cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
-    background: #4CAF50;
-    cursor: pointer;
-}
-
-/* Rounded sliders */
-.switch {
-    position: relative;
+.x_percent {
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    padding: 5px 11px;
 }
 
-.switch input {
-    display: none;
+.x_percent label {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
 }
 
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
+#source {
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
 }
 
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 24px;
-    width: 24px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
+#source:focus {
+    border-color: #4d90fe;
 }
 
-input:checked + .slider {
-    background-color: #2196F3;
+#destination {
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
 }
 
-input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+#destination:focus {
+    border-color: #4d90fe;
 }
 
-input:checked + .slider:before {
-    -webkit-transform: translateX(24px);
-    -ms-transform: translateX(24px);
-    transform: translateX(24px);
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #4d90fe;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 15px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
 }
 
-.slider.round {
-    border-radius: 24px;
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
 }
 
-.slider.round:before {
-    border-radius: 50%;
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
 }
