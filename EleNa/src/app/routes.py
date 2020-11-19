@@ -99,6 +99,8 @@ def get_route(source, destination, per, task):
             sampled_coords.append(best_path[i])
             i += skip
         sampled_coords.append(best_path[len(best_path)-1])
+    else:
+        sampled_coords = best_path
 
     result = []
     for node in sampled_coords:
