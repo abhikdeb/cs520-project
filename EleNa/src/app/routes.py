@@ -96,10 +96,10 @@ def get_route(source, destination, per, task):
     if len(best_path) > 20:
         skip = len(best_path) // 20 + 1
         i = 0
-        while i < len(best_path)-1:
+        while i < len(best_path) - 1:
             sampled_coords.append(best_path[i])
             i += skip
-        sampled_coords.append(best_path[len(best_path)-1])
+        sampled_coords.append(best_path[len(best_path) - 1])
     else:
         sampled_coords = best_path
 
@@ -112,14 +112,14 @@ def get_route(source, destination, per, task):
 
     gmap_route = routing_obj.get_gmap_ground_truth(source, destination)
     print(gmap_route)
-    # gmap_route=[]
 
-    # log
-
+    print(log)
 
     if task == "minimize":
         return jsonify(waypoints=result, elevation=log['best_path_gain_min'], distance=log['best_path_dist_min'],
+                       groundTruthDistance=log['shortest_path_dist'], groundTruthElevation=log['min_dist_grade'],
                        ground_truth=gmap_route)
     else:
         return jsonify(waypoints=result, elevation=log['best_path_gain_max'], distance=log['best_path_dist_max'],
+                       groundTruthDistance=log['shortest_path_dist'], groundTruthElevation=log['min_dist_grade'],
                        ground_truth=gmap_route)

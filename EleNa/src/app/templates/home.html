@@ -60,6 +60,8 @@
         let marker1, marker2;
         $("#submit").click(function () {
 
+            $("body").css("cursor", "progress");
+
             var objective;
             var opt_type = document.getElementsByName('max-min');
             for (i = 0; i < opt_type.length; i++) {
@@ -79,6 +81,8 @@
                 distance = data.distance
                 waypoints = data.waypoints
                 ground_truth = data.ground_truth
+                groundTruthElevation = data.groundTruthElevation
+                groundTruthDistance = data.groundTruthDistance
 
                 calculateAndDisplayRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, waypoints, ground_truth);
 
@@ -89,6 +93,8 @@
                 if (marker2){
                     marker2.setMap(null);
                 }
+
+                $("body").css("cursor", "default");
             })
         });
 
@@ -287,15 +293,8 @@
                 // For each route, display summary information.
                 summaryPanel.innerHTML += '<b>Total Elevation Gain: </b>' + elevation + '<br>';
                 summaryPanel.innerHTML += '<b>Total Distance: </b>' + distance + '<br>';
-                summaryPanel.innerHTML += '<b>Route:- (Scroll Down) </b><br>';
-                for (var i = 0; i < route.legs.length; i++) {
-                    var routeSegment = i + 1;
-                    summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-                        '</b><br>';
-                    summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-                    summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-                    summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
-                }
+                summaryPanel.innerHTML += '<b>Google Maps Elevation Gain: </b>' + groundTruthElevation + '<br>';
+                summaryPanel.innerHTML += '<b>Google Maps Distance (ground truth): </b>' + groundTruthDistance + '<br>';
             } else {
                 window.alert('Directions request failed due to ' + status);
             }
