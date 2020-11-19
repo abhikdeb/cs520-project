@@ -1,0 +1,211 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#panel {
+    font-family: 'Roboto', 'sans-serif';
+    line-height: 30px;
+    padding-left: 10px;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+}
+
+#panel select, #panel input {
+    font-size: 15px;
+}
+
+#panel select {
+    width: 100%;
+}
+
+#panel i {
+    font-size: 12px;
+}
+
+.heading {
+    font-size: x-large;
+    background-color: #4d90fe;
+    font-weight: bold;
+    font-family: Calibri;
+    color: white;
+    width: 30%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#map-canvas {
+    height: 100%;
+    float: left;
+    width: 70%;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#panel {
+    margin: 20px;
+    border-width: 2px;
+    width: 25%;
+    height: 400px;
+    float: left;
+    text-align: left;
+    padding-top: 0;
+}
+
+#info {
+    font-size: medium;
+    display: block;
+    margin-top: 10px;
+    background-color: #FFFFFF;
+    padding: 10px;
+    overflow: auto;
+    height: auto;
+}
+
+.pac-card {
+    margin: 10px 10px 0 0;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    font-family: Roboto;
+}
+
+#pac-container {
+    padding-bottom: 12px;
+    margin-right: 12px;
+}
+
+.searchfield {
+    display: inline-block;
+    padding: 5px 11px;
+}
+
+.searchfield label {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
+}
+
+.x_percent {
+    display: inline-block;
+    padding: 5px 11px;
+    font-size: 15px;
+}
+
+.x_percent label {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
+}
+
+#source label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    clear: both;
+    float:left;
+    margin-right:15px;
+}
+
+#source {
+    display: inline-block;
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 200px;
+    margin-right: 10px;
+}
+
+#source:focus {
+    border-color: red;
+}
+
+#destination label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    clear: both;
+    float:left;
+    margin-right:15px;
+}
+
+#destination {
+    display: inline-block;
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 200px;
+    margin-right: 10px;
+}
+
+#destination:focus {
+    border-color: red;
+}
+
+.button {
+    alignment: center;
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #4d90fe;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 15px;
+    padding: 20px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.button:hover span {
+    padding-right: 25px;
+}
+
+.button:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+p.info-header {
+    color: #4d90fe;
+}
+
+span.info-value {
+    color: crimson;
+}
