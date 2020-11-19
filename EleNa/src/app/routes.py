@@ -113,13 +113,11 @@ def get_route(source, destination, per, task):
     gmap_route = routing_obj.get_gmap_ground_truth(source, destination)
     print(gmap_route)
 
-    print(log)
-
     if task == "minimize":
         return jsonify(waypoints=result, elevation=log['best_path_gain_min'], distance=log['best_path_dist_min'],
                        groundTruthDistance=log['shortest_path_dist'], groundTruthElevation=log['min_dist_grade'],
-                       ground_truth=gmap_route)
+                       upperLimit=per*log['shortest_path_dist'], ground_truth=gmap_route)
     else:
         return jsonify(waypoints=result, elevation=log['best_path_gain_max'], distance=log['best_path_dist_max'],
                        groundTruthDistance=log['shortest_path_dist'], groundTruthElevation=log['min_dist_grade'],
-                       ground_truth=gmap_route)
+                       upperLimit=per*log['shortest_path_dist'], ground_truth=gmap_route)

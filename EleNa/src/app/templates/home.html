@@ -83,6 +83,7 @@
                 ground_truth = data.ground_truth
                 groundTruthElevation = data.groundTruthElevation
                 groundTruthDistance = data.groundTruthDistance
+                upperLimit = data.upperLimit
 
                 calculateAndDisplayRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, waypoints, ground_truth);
 
@@ -291,10 +292,11 @@
                 var summaryPanel = document.getElementById('info');
                 summaryPanel.innerHTML = '';
                 // For each route, display summary information.
-                summaryPanel.innerHTML += '<b>Total Elevation Gain: </b>' + elevation + '<br>';
-                summaryPanel.innerHTML += '<b>Total Distance: </b>' + distance + '<br>';
-                summaryPanel.innerHTML += '<b>Google Maps Elevation Gain: </b>' + groundTruthElevation + '<br>';
-                summaryPanel.innerHTML += '<b>Google Maps Distance (ground truth): </b>' + groundTruthDistance + '<br>';
+                summaryPanel.innerHTML += '<b>Total Elevation Gain: </b>' + elevation + 'metres <br>';
+                summaryPanel.innerHTML += '<b>Total Distance: </b>' + distance + ' meters <br>';
+                summaryPanel.innerHTML += '<b>Google Maps Elevation Gain: </b>' + groundTruthElevation + ' meters <br>';
+                summaryPanel.innerHTML += '<b>Google Maps Distance (ground truth): </b>' + groundTruthDistance + ' meters <br>';
+                summaryPanel.innerHTML += '<b>Upper limit on path returned by EleNa (x% of ground-truth): </b>' + upperLimit + ' meters <br>';
             } else {
                 window.alert('Directions request failed due to ' + status);
             }
