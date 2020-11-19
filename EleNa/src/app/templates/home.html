@@ -84,8 +84,16 @@
             })
         });
 
+        function placeMarker(location) {
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+        }
+
         var geocoder = new google.maps.Geocoder();
         google.maps.event.addListener(map, 'click', function (event) {
+            placeMarker(event.latLng);
             geocoder.geocode({
                 'latLng': event.latLng
             }, function (results, status) {
