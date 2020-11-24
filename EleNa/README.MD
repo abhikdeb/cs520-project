@@ -15,8 +15,10 @@ while limiting the total distance between the two locations to x% of the shortes
 
 ### Index
 
-1. Architecture
-2. Evaluation
+1. [Components](#components)
+2. [Architecture](#architecture)
+3. [User Interface](#user-interface)
+4. [Evaluation](#evaluation)
 
 ### Components
 
