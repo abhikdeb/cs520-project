@@ -1,0 +1,1541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>EleNa.src.app.data_model.shortest_path_experiments API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>EleNa.src.app.data_model.shortest_path_experiments</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import networkx as nx
+import osmnx as ox
+import matplotlib.pyplot as plt
+import operator
+import numpy as np
+from queue import PriorityQueue
+from EleNa.src.app.data_model.data_model import DataModel
+from scipy.optimize import minimize, minimize_scalar, differential_evolution
+import time
+import copy
+import sys
+import googlemaps
+
+from EleNa.src.config import Config
+
+
+def find_path_edges_min(graph, path, min_weight=&#39;grade&#39;):
+    path_length = 0
+    path_ele_gain = 0
+    path_edge_keys = []
+    for i in range(len(path) - 1):
+        edges = graph[path[i]][path[i + 1]]
+        min_weight_edge = min(edges.keys(), key=lambda k: edges[k][min_weight] * edges[k][&#39;length&#39;])
+        path_length += edges[min_weight_edge][&#39;length&#39;]
+        path_ele_gain += max(0, edges[min_weight_edge][&#39;grade&#39;] * edges[min_weight_edge][&#39;length&#39;])
+        path_edge_keys.append(min_weight_edge)
+    return (path_length, path_ele_gain, path_edge_keys)
+
+
+def find_path_edges(graph, path, min_weight=&#39;grade&#39;):
+    path_length = 0
+    path_ele_gain = 0
+    path_edge_keys = []
+    for i in range(len(path) - 1):
+        edges = graph[path[i]][path[i + 1]]
+        min_weight_edge = min(edges.keys(), key=lambda k: edges[k][min_weight])
+        path_length += edges[min_weight_edge][&#39;length&#39;]
+        path_ele_gain += edges[min_weight_edge][&#39;grade&#39;] * edges[min_weight_edge][&#39;length&#39;]
+        path_edge_keys.append(min_weight_edge)
+    return (path_length, path_ele_gain, path_edge_keys)
+
+
+## add for max vals
+def find_path_edges_max(graph, path, min_weight=&#39;grade&#39;):
+    path_length = 0
+    path_ele_gain = 0
+    path_edge_keys = []
+    for i in range(len(path) - 1):
+        edges = graph[path[i]][path[i + 1]]
+        min_weight_edge = max(edges.keys(), key=lambda k: edges[k][min_weight] * edges[k][&#39;length&#39;])
+        path_length += edges[min_weight_edge][&#39;length&#39;]
+        path_ele_gain += max(0, edges[min_weight_edge][&#39;grade&#39;] * edges[min_weight_edge][&#39;length&#39;])
+        path_edge_keys.append(min_weight_edge)
+    return (path_length, path_ele_gain, path_edge_keys)
+
+
+class Routing:
+    def __init__(self, data_model):
+        self.data_model = data_model
+        self.G = self.data_model.get_graph()
+        self.start = None
+        self.end = None
+        self.paths = None
+        self.x = 1.9
+        self.paths_with_stats = None
+
+        start_loc = (42.432121, -72.4916)
+        end_loc = (42.31338, -72.4672)  # (42.3857, -72.5298)
+        self.set_start_end(start_loc, end_loc)
+
+        self.gmap_client = googlemaps.Client(Config.API_KEY)
+
+    def plot_route(self, route):
+        fig, ax = ox.plot_graph_route(self.G, route, route_linewidth=6, node_size=0, bgcolor=&#39;k&#39;)
+        plt.show()
+
+    def get_node(self, loc):
+        return ox.get_nearest_node(self.G, loc)
+
+    def set_start_end(self, start_loc, end_loc):
+        self.start = self.get_node(start_loc)
+        self.end = self.get_node(end_loc)
+
+    def set_max_deviation(self, x):
+        self.x = x
+
+    def get_gmap_ground_truth(self, source, destination):
+        routes = self.gmap_client.directions(source, destination, mode=&#34;walking&#34;)
+        steps = routes[0][&#34;legs&#34;][0][&#34;steps&#34;]
+
+        sampled_waypoints = []
+        skip = 1
+
+        if len(steps) &gt; 20:
+            skip = len(steps) // 20 + 1
+
+        i = 0
+        while i &lt; len(steps) - 1:
+            sampled_waypoints.append({
+                &#34;Lat&#34;: steps[i][&#34;start_location&#34;][&#34;lat&#34;],
+                &#34;Long&#34;: steps[i][&#34;start_location&#34;][&#34;lng&#34;],
+            })
+            i += skip
+
+        sampled_waypoints.append({
+            &#34;Lat&#34;: steps[len(steps) - 1][&#34;end_location&#34;][&#34;lat&#34;],
+            &#34;Long&#34;: steps[len(steps) - 1][&#34;end_location&#34;][&#34;lng&#34;],
+        })
+
+        return sampled_waypoints
+
+    def get_shortest_path_length(self):
+        &#39;&#39;&#39;
+            arguments: start and end locations
+            returns: the shortest path length between the start and the end nodes
+            Note: it can also be modified to return the path as list of nodes using backtrace()
+            credits: https://github.com/blkrt/dijkstra-python
+        &#39;&#39;&#39;
+
+        def backtrace(previous, start, end):
+            &#39;&#39;&#39;
+                returns the shortest path between start and end as a list of nodes
+            &#39;&#39;&#39;
+            node = end
+            path = []
+            while node != start:
+                path.append(node)
+                node = previous[node]
+            path.append(node)
+            path.reverse()
+            return path
+
+        def get_shortest_edge_length(node1, node2):
+            &#39;&#39;&#39;
+                returns the length of the shortest edge between a pair of neighboring nodes
+            &#39;&#39;&#39;
+            edges = self.G.get_edge_data(node1, node2)
+            if len(edges.keys()) == 1:
+                return edges[0][&#39;length&#39;]
+
+            edge_to_len = {}
+            for key in edges.keys():
+                edge_to_len[key] = edges[key][&#39;length&#39;]
+            min_key = min(edge_to_len, key=edge_to_len.get)
+            return edges[min_key][&#39;length&#39;]
+
+        previous = {}
+        distance = {v: np.inf for v in list(self.G.nodes())}
+        visited = set()
+        pq = PriorityQueue()
+        distance[self.start] = 0
+        pq.put((distance[self.start], self.start))
+
+        while pq.qsize():
+            dist, node = pq.get()
+            visited.add(node)
+            # print(&#39;Visiting {}&#39;.format(node))
+
+            for nbr in dict(self.G.adjacency()).get(node):
+                edge_length = get_shortest_edge_length(node, nbr)
+                # print(edge_length)
+                path_length = distance[node] + edge_length
+                if path_length &lt; distance[nbr]:
+                    distance[nbr] = path_length
+                    previous[nbr] = node
+                    if nbr not in visited:
+                        visited.add(nbr)
+                        pq.put((distance[nbr], nbr))
+                    else:
+                        _, _ = pq.get((distance[nbr], nbr))
+                        pq.put((distance[nbr], nbr))
+
+        shortest_path = backtrace(previous, self.start, self.end)  # shortest path with the list of intermediate nodes
+        # print(shortest_path)
+        return distance[self.end]
+
+    def get_shortest_path(self, mode):
+        # call when entered from UI
+        # self.set_start_end()
+
+        # Baseline
+        if mode == &#34;baseline&#34;:
+            path = ox.distance.shortest_path(self.G, self.start, self.end, weight=&#39;length&#39;)
+            dist, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, path, min_weight=&#39;length&#39;)
+            logs = {}
+            logs[&#39;dist&#39;] = dist
+            logs[&#39;min_dist_grade&#39;] = min_dist_grade
+            return path, logs
+        elif mode == &#39;minimize&#39;:
+            return self.minimize_elevation_gain_ML(self.x)
+        elif mode == &#39;maximize&#39;:
+            return self.maximize_elevation_gain_ML(self.x)
+
+    # exhaustive
+    # return self.minimize_elevation_gain(1.5)
+
+    # algo2
+    # graph_proj = ox.project_graph(self.G)
+    # shortest_path_dist = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+
+    # return self.dfs_get_all_paths(graph_proj, self.start, self.end, shortest_path_dist * 1.2)
+
+    def dfs_get_all_paths(self, graph, start, goal, max_length):
+        paths = []
+
+        def dfs(current, le, current_path, visited):
+            if current == goal:
+                if le &gt; max_length:
+                    return
+                else:
+                    current_path.append(current)
+                    paths.append(current_path)
+                    # print (&#34;This path length:&#34;,length)
+                    # print (&#34;path found&#34;)
+                    return
+            if le &gt; max_length:
+                return
+            for u, next_node, data in graph.edges(current, data=True):
+                if next_node in visited:
+                    continue
+                dfs(next_node, le + abs(self.get_cost(graph, current, next_node)), current_path + [current],
+                    visited + [next_node])
+            return
+
+        dfs(start, 0, [], [])
+        print(&#34;Total paths:&#34;, len(paths))
+
+        min_val = sys.maxsize
+        max_val = -1 * sys.maxsize
+        min_path, max_path = [], []
+        for path in paths:
+            elevation_data = self.get_elevation_of_path(graph, path)
+            if min_val != min(elevation_data, min_val):
+                min_val = elevation_data
+                min_path = path
+            if max_val != max(elevation_data, max_val):
+                max_val = elevation_data
+                max_path = path
+        return min_path, max_path
+
+    def get_cost(self, graph_projection, a, b):
+        return graph_projection.edges[a, b, 0][&#39;length&#39;]
+
+    def minimize_elevation_gain_ML(self, percent_shortest_path):
+        # Enforce x% of shortest path 1.0 or larger
+        if percent_shortest_path &lt; 1.0:
+            raise Exception(&#34;Cannot find a path shorter than the shortest path.&#34;)
+
+        # Find shortest distance path
+        min_dist, min_dist_path = nx.single_source_dijkstra(self.G, self.start, self.end, weight=&#39;length&#39;)
+        _, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, min_dist_path, min_weight=&#39;length&#39;)
+        # Set maximum distance willing to travel
+        max_dist = min_dist * percent_shortest_path
+
+        # Find total distance and grade gain of the edges for normalization
+        total_dist = 0
+        total_grade = 0
+        for u, v, data in self.G.edges(data=True):
+            total_dist += data[&#39;length&#39;]
+            total_grade += data[&#39;grade&#39;]
+
+        # Dictionary for all paths found within max distance
+        paths_found = [{&#39;path&#39;: min_dist_path, &#39;length&#39;: min_dist,
+                        &#39;grade&#39;: min_dist_grade, &#39;keys&#39;: min_dist_keys}]
+
+        G_processed = copy.deepcopy(self.G)
+
+        def minimize_alpha(alpha):
+
+            for u, v, k, data in self.G.edges(keys=True, data=True):
+                G_processed.add_edge(u, v, key=k, grade=
+                max(0, alpha * data[&#39;grade&#39;] * data[&#39;length&#39;]) +
+                (1 - alpha) * data[&#39;length&#39;])
+
+            # Find shortest path for new grade
+            path = ox.distance.shortest_path(G_processed, self.start, self.end, weight=&#39;grade&#39;)
+            path_length, path_grade, path_keys = find_path_edges_min(self.G, path)
+
+            # If the path found has a shorter distance than the max,
+            if path_length &lt;= max_dist:
+                # Add it to the list of paths to pick from
+                # print(&#34;path_length&#34;, path_length, path_grade)
+                paths_found.append({&#39;path&#39;: path, &#39;length&#39;: path_length,
+                                    &#39;grade&#39;: path_grade, &#39;keys&#39;: path_keys})
+
+            # print(&#34;alpha:&#34;, alpha, &#34;loss:&#34;, (max_dist - path_length) ** 2)
+            return (max_dist - path_length) ** 2
+
+        s = time.time()
+        a = minimize_scalar(minimize_alpha, method=&#34;Bounded&#34;, bounds=(0, 1))
+        # a = minimize(minimize_alpha, 0.5, bounds = [(0,1)])
+        # a = differential_evolution(minimize_alpha, bounds = [(0, 1)])
+        print(&#34;Time taken&#34;, time.time() - s, a)
+
+        # Return the lowest grade gain within max distance
+        logs = {}
+        # best_path_max = max(paths_found, key=lambda d: d[&#39;grade&#39;])
+        # logs[&#39;best_path_dist_max&#39;] = best_path_max[&#39;length&#39;]
+        # logs[&#39;best_path_gain_max&#39;] = best_path_max[&#39;grade&#39;]
+        # best_path_max = best_path_max[&#39;path&#39;]
+
+        best_path_min = min(paths_found, key=lambda d: d[&#39;grade&#39;])
+        logs[&#39;best_path_dist_min&#39;] = best_path_min[&#39;length&#39;]
+        logs[&#39;best_path_gain_min&#39;] = best_path_min[&#39;grade&#39;]
+        best_path_min = best_path_min[&#39;path&#39;]
+
+        logs[&#39;shortest_path_dist&#39;] = min_dist
+        logs[&#39;min_dist_grade&#39;] = min_dist_grade
+
+        return best_path_min, logs
+
+    def maximize_elevation_gain_ML(self, percent_shortest_path):
+        # Enforce x% of shortest path 1.0 or larger
+        if percent_shortest_path &lt; 1.0:
+            raise Exception(&#34;Cannot find a path shorter than the shortest path.&#34;)
+
+        # Find shortest distance path
+        min_dist, min_dist_path = nx.single_source_dijkstra(self.G, self.start, self.end, weight=&#39;length&#39;)
+        _, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, min_dist_path, min_weight=&#39;length&#39;)
+        # Set maximum distance willing to travel
+        max_dist = min_dist * percent_shortest_path
+
+        # Find total distance and grade gain of the edges for normalization
+        total_dist = 0
+        total_grade = 0
+        for u, v, data in self.G.edges(data=True):
+            total_dist += data[&#39;length&#39;]
+            total_grade += data[&#39;grade&#39;]
+
+        # Dictionary for all paths found within max distance
+        paths_found = [{&#39;path&#39;: min_dist_path, &#39;length&#39;: min_dist,
+                        &#39;grade&#39;: min_dist_grade, &#39;keys&#39;: min_dist_keys}]
+
+        G_processed = copy.deepcopy(self.G)
+
+        def minimize_alpha(alpha):
+            for u, v, k, data in self.G.edges(keys=True, data=True):
+                G_processed.add_edge(u, v, key=k, grade=
+                max(0, (1 - alpha) / (1e-6 + data[&#39;grade&#39;])) + (alpha) / (1e-6 + data[&#39;length&#39;]))
+
+            # Find shortest path for new grade
+            path = ox.distance.shortest_path(G_processed, self.start, self.end, weight=&#39;grade&#39;)
+            path_length, path_grade, path_keys = find_path_edges_max(self.G, path)
+
+            # If the path found has a shorter distance than the max,
+            if path_length &lt;= max_dist:
+                # Add it to the list of paths to pick from
+                # print(&#34;path_length&#34;, path_length, path_grade)
+                paths_found.append({&#39;path&#39;: path, &#39;length&#39;: path_length,
+                                    &#39;grade&#39;: path_grade, &#39;keys&#39;: path_keys})
+            # print(&#34;alpha:&#34;, alpha, &#34;loss:&#34;, (max_dist - path_length) ** 2)
+            return (max_dist - path_length) ** 2
+
+        s = time.time()
+        a = minimize_scalar(minimize_alpha, method=&#34;Bounded&#34;, bounds=(0, 1))
+        # a = minimize(minimize_alpha, 0.5, method = &#34;Nelder-Mead&#34;)
+        # a = differential_evolution(minimize_alpha, bounds = [(0, 1)])
+        print(&#34;Time taken&#34;, time.time() - s, a)
+
+        # Return the lowest grade gain within max distance
+        logs = {}
+        best_path_max = max(paths_found, key=lambda d: d[&#39;grade&#39;])
+        logs[&#39;best_path_dist_max&#39;] = best_path_max[&#39;length&#39;]
+        logs[&#39;best_path_gain_max&#39;] = best_path_max[&#39;grade&#39;]
+        best_path_max = best_path_max[&#39;path&#39;]
+
+        # best_path_min = min(paths_found, key=lambda d: d[&#39;grade&#39;])
+        # logs[&#39;best_path_dist_min&#39;] = best_path_min[&#39;length&#39;]
+        # logs[&#39;best_path_gain_min&#39;] = best_path_min[&#39;grade&#39;]
+        # best_path_min = best_path_min[&#39;path&#39;]
+
+        logs[&#39;shortest_path_dist&#39;] = min_dist
+        logs[&#39;min_dist_grade&#39;] = min_dist_grade
+
+        return best_path_max, logs
+
+    def get_elevation_of_path(self, graph, path):
+        elevation_cost = 0
+        if not path:
+            return 0
+        for i in range(len(path) - 1):
+            nodeA = path[i]
+            nodeB = path[i + 1]
+
+            # method 1: using node_info
+            elevation_data = graph.nodes[nodeB][&#39;elevation&#39;] - graph.nodes[nodeA][&#39;elevation&#39;]
+
+            # method 2: using edge_info
+            # edge_data = self.G.edges[nodeA, nodeB, 0]
+            # elevation_data = edge_data[&#39;grade&#39;] * edge_data[&#39;length&#39;]
+
+            if elevation_data &gt; 0:
+                elevation_cost += elevation_data
+        return elevation_cost
+
+    def get_length_of_path(self, graph, path):
+        length_cost = 0
+        if not path:
+            return 0
+        for i in range(len(path) - 1):
+            nodeA = path[i]
+            nodeB = path[i + 1]
+
+            edge_data = graph.edges[nodeA, nodeB, 0]
+            length_cost += edge_data[&#39;length&#39;]
+
+        return length_cost
+
+    def get_all_paths(self, graph, source, target, allowed_hops):
+        # [[length, elevation_gain, [path]]]
+        graph_proj = ox.project_graph(graph)
+        self.paths = list(nx.all_simple_paths(graph_proj, source, target, allowed_hops))
+        min_val = sys.maxsize
+        max_val = -1 * sys.maxsize
+        min_path, max_path = [], []
+        for path in self.paths:
+            print(&#34;Path is&#34;, path)
+            elevation_data = self.get_elevation_of_path(graph_proj, path)
+            length_data = self.get_length_of_path(graph_proj, path)
+            if min_val != min(elevation_data, min_val) and length_data &lt; can_travel:
+                min_val = elevation_data
+                min_path = path
+            if max_val != max(elevation_data, max_val) and length_data &lt; can_travel:
+                max_val = elevation_data
+                max_path = path
+        return min_path, max_path
+
+    # self.paths_with_stats = []
+
+    # for path in self.paths:
+    #     self.paths_with_stats.append([self.get_length_of_path(path), self.get_elevation_of_path(path), path])
+
+    def minimize_elevation_gain(self, percent_shortest_path):
+        shortest_path = nx.shortest_path(self.G, self.start, self.end, weight=&#39;length&#39;)
+        shortest_path_dist = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+        cutoff_dist = shortest_path_dist * percent_shortest_path
+        print(&#34;cutoff&#34;, cutoff_dist, &#34;shortest&#34;, shortest_path_dist)
+
+        self.get_all_paths(self.G, self.start, self.end, len(shortest_path) + 1)
+
+    # return min(self.paths_with_stats, key=lambda x: x[1])
+
+    def maximize_elevation_gain(self, percent_shortest_path):
+        shortest_path_len = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+        cutoff_dist = shortest_path_len * percent_shortest_path
+
+        self.get_all_paths(self.G, self.start, self.end, cutoff_dist)
+        return max(self.paths_with_stats, key=lambda x: x[1])</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.find_path_edges"><code class="name flex">
+<span>def <span class="ident">find_path_edges</span></span>(<span>graph, path, min_weight='grade')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_path_edges(graph, path, min_weight=&#39;grade&#39;):
+    path_length = 0
+    path_ele_gain = 0
+    path_edge_keys = []
+    for i in range(len(path) - 1):
+        edges = graph[path[i]][path[i + 1]]
+        min_weight_edge = min(edges.keys(), key=lambda k: edges[k][min_weight])
+        path_length += edges[min_weight_edge][&#39;length&#39;]
+        path_ele_gain += edges[min_weight_edge][&#39;grade&#39;] * edges[min_weight_edge][&#39;length&#39;]
+        path_edge_keys.append(min_weight_edge)
+    return (path_length, path_ele_gain, path_edge_keys)</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.find_path_edges_max"><code class="name flex">
+<span>def <span class="ident">find_path_edges_max</span></span>(<span>graph, path, min_weight='grade')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_path_edges_max(graph, path, min_weight=&#39;grade&#39;):
+    path_length = 0
+    path_ele_gain = 0
+    path_edge_keys = []
+    for i in range(len(path) - 1):
+        edges = graph[path[i]][path[i + 1]]
+        min_weight_edge = max(edges.keys(), key=lambda k: edges[k][min_weight] * edges[k][&#39;length&#39;])
+        path_length += edges[min_weight_edge][&#39;length&#39;]
+        path_ele_gain += max(0, edges[min_weight_edge][&#39;grade&#39;] * edges[min_weight_edge][&#39;length&#39;])
+        path_edge_keys.append(min_weight_edge)
+    return (path_length, path_ele_gain, path_edge_keys)</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.find_path_edges_min"><code class="name flex">
+<span>def <span class="ident">find_path_edges_min</span></span>(<span>graph, path, min_weight='grade')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_path_edges_min(graph, path, min_weight=&#39;grade&#39;):
+    path_length = 0
+    path_ele_gain = 0
+    path_edge_keys = []
+    for i in range(len(path) - 1):
+        edges = graph[path[i]][path[i + 1]]
+        min_weight_edge = min(edges.keys(), key=lambda k: edges[k][min_weight] * edges[k][&#39;length&#39;])
+        path_length += edges[min_weight_edge][&#39;length&#39;]
+        path_ele_gain += max(0, edges[min_weight_edge][&#39;grade&#39;] * edges[min_weight_edge][&#39;length&#39;])
+        path_edge_keys.append(min_weight_edge)
+    return (path_length, path_ele_gain, path_edge_keys)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing"><code class="flex name class">
+<span>class <span class="ident">Routing</span></span>
+<span>(</span><span>data_model)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Routing:
+    def __init__(self, data_model):
+        self.data_model = data_model
+        self.G = self.data_model.get_graph()
+        self.start = None
+        self.end = None
+        self.paths = None
+        self.x = 1.9
+        self.paths_with_stats = None
+
+        start_loc = (42.432121, -72.4916)
+        end_loc = (42.31338, -72.4672)  # (42.3857, -72.5298)
+        self.set_start_end(start_loc, end_loc)
+
+        self.gmap_client = googlemaps.Client(Config.API_KEY)
+
+    def plot_route(self, route):
+        fig, ax = ox.plot_graph_route(self.G, route, route_linewidth=6, node_size=0, bgcolor=&#39;k&#39;)
+        plt.show()
+
+    def get_node(self, loc):
+        return ox.get_nearest_node(self.G, loc)
+
+    def set_start_end(self, start_loc, end_loc):
+        self.start = self.get_node(start_loc)
+        self.end = self.get_node(end_loc)
+
+    def set_max_deviation(self, x):
+        self.x = x
+
+    def get_gmap_ground_truth(self, source, destination):
+        routes = self.gmap_client.directions(source, destination, mode=&#34;walking&#34;)
+        steps = routes[0][&#34;legs&#34;][0][&#34;steps&#34;]
+
+        sampled_waypoints = []
+        skip = 1
+
+        if len(steps) &gt; 20:
+            skip = len(steps) // 20 + 1
+
+        i = 0
+        while i &lt; len(steps) - 1:
+            sampled_waypoints.append({
+                &#34;Lat&#34;: steps[i][&#34;start_location&#34;][&#34;lat&#34;],
+                &#34;Long&#34;: steps[i][&#34;start_location&#34;][&#34;lng&#34;],
+            })
+            i += skip
+
+        sampled_waypoints.append({
+            &#34;Lat&#34;: steps[len(steps) - 1][&#34;end_location&#34;][&#34;lat&#34;],
+            &#34;Long&#34;: steps[len(steps) - 1][&#34;end_location&#34;][&#34;lng&#34;],
+        })
+
+        return sampled_waypoints
+
+    def get_shortest_path_length(self):
+        &#39;&#39;&#39;
+            arguments: start and end locations
+            returns: the shortest path length between the start and the end nodes
+            Note: it can also be modified to return the path as list of nodes using backtrace()
+            credits: https://github.com/blkrt/dijkstra-python
+        &#39;&#39;&#39;
+
+        def backtrace(previous, start, end):
+            &#39;&#39;&#39;
+                returns the shortest path between start and end as a list of nodes
+            &#39;&#39;&#39;
+            node = end
+            path = []
+            while node != start:
+                path.append(node)
+                node = previous[node]
+            path.append(node)
+            path.reverse()
+            return path
+
+        def get_shortest_edge_length(node1, node2):
+            &#39;&#39;&#39;
+                returns the length of the shortest edge between a pair of neighboring nodes
+            &#39;&#39;&#39;
+            edges = self.G.get_edge_data(node1, node2)
+            if len(edges.keys()) == 1:
+                return edges[0][&#39;length&#39;]
+
+            edge_to_len = {}
+            for key in edges.keys():
+                edge_to_len[key] = edges[key][&#39;length&#39;]
+            min_key = min(edge_to_len, key=edge_to_len.get)
+            return edges[min_key][&#39;length&#39;]
+
+        previous = {}
+        distance = {v: np.inf for v in list(self.G.nodes())}
+        visited = set()
+        pq = PriorityQueue()
+        distance[self.start] = 0
+        pq.put((distance[self.start], self.start))
+
+        while pq.qsize():
+            dist, node = pq.get()
+            visited.add(node)
+            # print(&#39;Visiting {}&#39;.format(node))
+
+            for nbr in dict(self.G.adjacency()).get(node):
+                edge_length = get_shortest_edge_length(node, nbr)
+                # print(edge_length)
+                path_length = distance[node] + edge_length
+                if path_length &lt; distance[nbr]:
+                    distance[nbr] = path_length
+                    previous[nbr] = node
+                    if nbr not in visited:
+                        visited.add(nbr)
+                        pq.put((distance[nbr], nbr))
+                    else:
+                        _, _ = pq.get((distance[nbr], nbr))
+                        pq.put((distance[nbr], nbr))
+
+        shortest_path = backtrace(previous, self.start, self.end)  # shortest path with the list of intermediate nodes
+        # print(shortest_path)
+        return distance[self.end]
+
+    def get_shortest_path(self, mode):
+        # call when entered from UI
+        # self.set_start_end()
+
+        # Baseline
+        if mode == &#34;baseline&#34;:
+            path = ox.distance.shortest_path(self.G, self.start, self.end, weight=&#39;length&#39;)
+            dist, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, path, min_weight=&#39;length&#39;)
+            logs = {}
+            logs[&#39;dist&#39;] = dist
+            logs[&#39;min_dist_grade&#39;] = min_dist_grade
+            return path, logs
+        elif mode == &#39;minimize&#39;:
+            return self.minimize_elevation_gain_ML(self.x)
+        elif mode == &#39;maximize&#39;:
+            return self.maximize_elevation_gain_ML(self.x)
+
+    # exhaustive
+    # return self.minimize_elevation_gain(1.5)
+
+    # algo2
+    # graph_proj = ox.project_graph(self.G)
+    # shortest_path_dist = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+
+    # return self.dfs_get_all_paths(graph_proj, self.start, self.end, shortest_path_dist * 1.2)
+
+    def dfs_get_all_paths(self, graph, start, goal, max_length):
+        paths = []
+
+        def dfs(current, le, current_path, visited):
+            if current == goal:
+                if le &gt; max_length:
+                    return
+                else:
+                    current_path.append(current)
+                    paths.append(current_path)
+                    # print (&#34;This path length:&#34;,length)
+                    # print (&#34;path found&#34;)
+                    return
+            if le &gt; max_length:
+                return
+            for u, next_node, data in graph.edges(current, data=True):
+                if next_node in visited:
+                    continue
+                dfs(next_node, le + abs(self.get_cost(graph, current, next_node)), current_path + [current],
+                    visited + [next_node])
+            return
+
+        dfs(start, 0, [], [])
+        print(&#34;Total paths:&#34;, len(paths))
+
+        min_val = sys.maxsize
+        max_val = -1 * sys.maxsize
+        min_path, max_path = [], []
+        for path in paths:
+            elevation_data = self.get_elevation_of_path(graph, path)
+            if min_val != min(elevation_data, min_val):
+                min_val = elevation_data
+                min_path = path
+            if max_val != max(elevation_data, max_val):
+                max_val = elevation_data
+                max_path = path
+        return min_path, max_path
+
+    def get_cost(self, graph_projection, a, b):
+        return graph_projection.edges[a, b, 0][&#39;length&#39;]
+
+    def minimize_elevation_gain_ML(self, percent_shortest_path):
+        # Enforce x% of shortest path 1.0 or larger
+        if percent_shortest_path &lt; 1.0:
+            raise Exception(&#34;Cannot find a path shorter than the shortest path.&#34;)
+
+        # Find shortest distance path
+        min_dist, min_dist_path = nx.single_source_dijkstra(self.G, self.start, self.end, weight=&#39;length&#39;)
+        _, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, min_dist_path, min_weight=&#39;length&#39;)
+        # Set maximum distance willing to travel
+        max_dist = min_dist * percent_shortest_path
+
+        # Find total distance and grade gain of the edges for normalization
+        total_dist = 0
+        total_grade = 0
+        for u, v, data in self.G.edges(data=True):
+            total_dist += data[&#39;length&#39;]
+            total_grade += data[&#39;grade&#39;]
+
+        # Dictionary for all paths found within max distance
+        paths_found = [{&#39;path&#39;: min_dist_path, &#39;length&#39;: min_dist,
+                        &#39;grade&#39;: min_dist_grade, &#39;keys&#39;: min_dist_keys}]
+
+        G_processed = copy.deepcopy(self.G)
+
+        def minimize_alpha(alpha):
+
+            for u, v, k, data in self.G.edges(keys=True, data=True):
+                G_processed.add_edge(u, v, key=k, grade=
+                max(0, alpha * data[&#39;grade&#39;] * data[&#39;length&#39;]) +
+                (1 - alpha) * data[&#39;length&#39;])
+
+            # Find shortest path for new grade
+            path = ox.distance.shortest_path(G_processed, self.start, self.end, weight=&#39;grade&#39;)
+            path_length, path_grade, path_keys = find_path_edges_min(self.G, path)
+
+            # If the path found has a shorter distance than the max,
+            if path_length &lt;= max_dist:
+                # Add it to the list of paths to pick from
+                # print(&#34;path_length&#34;, path_length, path_grade)
+                paths_found.append({&#39;path&#39;: path, &#39;length&#39;: path_length,
+                                    &#39;grade&#39;: path_grade, &#39;keys&#39;: path_keys})
+
+            # print(&#34;alpha:&#34;, alpha, &#34;loss:&#34;, (max_dist - path_length) ** 2)
+            return (max_dist - path_length) ** 2
+
+        s = time.time()
+        a = minimize_scalar(minimize_alpha, method=&#34;Bounded&#34;, bounds=(0, 1))
+        # a = minimize(minimize_alpha, 0.5, bounds = [(0,1)])
+        # a = differential_evolution(minimize_alpha, bounds = [(0, 1)])
+        print(&#34;Time taken&#34;, time.time() - s, a)
+
+        # Return the lowest grade gain within max distance
+        logs = {}
+        # best_path_max = max(paths_found, key=lambda d: d[&#39;grade&#39;])
+        # logs[&#39;best_path_dist_max&#39;] = best_path_max[&#39;length&#39;]
+        # logs[&#39;best_path_gain_max&#39;] = best_path_max[&#39;grade&#39;]
+        # best_path_max = best_path_max[&#39;path&#39;]
+
+        best_path_min = min(paths_found, key=lambda d: d[&#39;grade&#39;])
+        logs[&#39;best_path_dist_min&#39;] = best_path_min[&#39;length&#39;]
+        logs[&#39;best_path_gain_min&#39;] = best_path_min[&#39;grade&#39;]
+        best_path_min = best_path_min[&#39;path&#39;]
+
+        logs[&#39;shortest_path_dist&#39;] = min_dist
+        logs[&#39;min_dist_grade&#39;] = min_dist_grade
+
+        return best_path_min, logs
+
+    def maximize_elevation_gain_ML(self, percent_shortest_path):
+        # Enforce x% of shortest path 1.0 or larger
+        if percent_shortest_path &lt; 1.0:
+            raise Exception(&#34;Cannot find a path shorter than the shortest path.&#34;)
+
+        # Find shortest distance path
+        min_dist, min_dist_path = nx.single_source_dijkstra(self.G, self.start, self.end, weight=&#39;length&#39;)
+        _, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, min_dist_path, min_weight=&#39;length&#39;)
+        # Set maximum distance willing to travel
+        max_dist = min_dist * percent_shortest_path
+
+        # Find total distance and grade gain of the edges for normalization
+        total_dist = 0
+        total_grade = 0
+        for u, v, data in self.G.edges(data=True):
+            total_dist += data[&#39;length&#39;]
+            total_grade += data[&#39;grade&#39;]
+
+        # Dictionary for all paths found within max distance
+        paths_found = [{&#39;path&#39;: min_dist_path, &#39;length&#39;: min_dist,
+                        &#39;grade&#39;: min_dist_grade, &#39;keys&#39;: min_dist_keys}]
+
+        G_processed = copy.deepcopy(self.G)
+
+        def minimize_alpha(alpha):
+            for u, v, k, data in self.G.edges(keys=True, data=True):
+                G_processed.add_edge(u, v, key=k, grade=
+                max(0, (1 - alpha) / (1e-6 + data[&#39;grade&#39;])) + (alpha) / (1e-6 + data[&#39;length&#39;]))
+
+            # Find shortest path for new grade
+            path = ox.distance.shortest_path(G_processed, self.start, self.end, weight=&#39;grade&#39;)
+            path_length, path_grade, path_keys = find_path_edges_max(self.G, path)
+
+            # If the path found has a shorter distance than the max,
+            if path_length &lt;= max_dist:
+                # Add it to the list of paths to pick from
+                # print(&#34;path_length&#34;, path_length, path_grade)
+                paths_found.append({&#39;path&#39;: path, &#39;length&#39;: path_length,
+                                    &#39;grade&#39;: path_grade, &#39;keys&#39;: path_keys})
+            # print(&#34;alpha:&#34;, alpha, &#34;loss:&#34;, (max_dist - path_length) ** 2)
+            return (max_dist - path_length) ** 2
+
+        s = time.time()
+        a = minimize_scalar(minimize_alpha, method=&#34;Bounded&#34;, bounds=(0, 1))
+        # a = minimize(minimize_alpha, 0.5, method = &#34;Nelder-Mead&#34;)
+        # a = differential_evolution(minimize_alpha, bounds = [(0, 1)])
+        print(&#34;Time taken&#34;, time.time() - s, a)
+
+        # Return the lowest grade gain within max distance
+        logs = {}
+        best_path_max = max(paths_found, key=lambda d: d[&#39;grade&#39;])
+        logs[&#39;best_path_dist_max&#39;] = best_path_max[&#39;length&#39;]
+        logs[&#39;best_path_gain_max&#39;] = best_path_max[&#39;grade&#39;]
+        best_path_max = best_path_max[&#39;path&#39;]
+
+        # best_path_min = min(paths_found, key=lambda d: d[&#39;grade&#39;])
+        # logs[&#39;best_path_dist_min&#39;] = best_path_min[&#39;length&#39;]
+        # logs[&#39;best_path_gain_min&#39;] = best_path_min[&#39;grade&#39;]
+        # best_path_min = best_path_min[&#39;path&#39;]
+
+        logs[&#39;shortest_path_dist&#39;] = min_dist
+        logs[&#39;min_dist_grade&#39;] = min_dist_grade
+
+        return best_path_max, logs
+
+    def get_elevation_of_path(self, graph, path):
+        elevation_cost = 0
+        if not path:
+            return 0
+        for i in range(len(path) - 1):
+            nodeA = path[i]
+            nodeB = path[i + 1]
+
+            # method 1: using node_info
+            elevation_data = graph.nodes[nodeB][&#39;elevation&#39;] - graph.nodes[nodeA][&#39;elevation&#39;]
+
+            # method 2: using edge_info
+            # edge_data = self.G.edges[nodeA, nodeB, 0]
+            # elevation_data = edge_data[&#39;grade&#39;] * edge_data[&#39;length&#39;]
+
+            if elevation_data &gt; 0:
+                elevation_cost += elevation_data
+        return elevation_cost
+
+    def get_length_of_path(self, graph, path):
+        length_cost = 0
+        if not path:
+            return 0
+        for i in range(len(path) - 1):
+            nodeA = path[i]
+            nodeB = path[i + 1]
+
+            edge_data = graph.edges[nodeA, nodeB, 0]
+            length_cost += edge_data[&#39;length&#39;]
+
+        return length_cost
+
+    def get_all_paths(self, graph, source, target, allowed_hops):
+        # [[length, elevation_gain, [path]]]
+        graph_proj = ox.project_graph(graph)
+        self.paths = list(nx.all_simple_paths(graph_proj, source, target, allowed_hops))
+        min_val = sys.maxsize
+        max_val = -1 * sys.maxsize
+        min_path, max_path = [], []
+        for path in self.paths:
+            print(&#34;Path is&#34;, path)
+            elevation_data = self.get_elevation_of_path(graph_proj, path)
+            length_data = self.get_length_of_path(graph_proj, path)
+            if min_val != min(elevation_data, min_val) and length_data &lt; can_travel:
+                min_val = elevation_data
+                min_path = path
+            if max_val != max(elevation_data, max_val) and length_data &lt; can_travel:
+                max_val = elevation_data
+                max_path = path
+        return min_path, max_path
+
+    # self.paths_with_stats = []
+
+    # for path in self.paths:
+    #     self.paths_with_stats.append([self.get_length_of_path(path), self.get_elevation_of_path(path), path])
+
+    def minimize_elevation_gain(self, percent_shortest_path):
+        shortest_path = nx.shortest_path(self.G, self.start, self.end, weight=&#39;length&#39;)
+        shortest_path_dist = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+        cutoff_dist = shortest_path_dist * percent_shortest_path
+        print(&#34;cutoff&#34;, cutoff_dist, &#34;shortest&#34;, shortest_path_dist)
+
+        self.get_all_paths(self.G, self.start, self.end, len(shortest_path) + 1)
+
+    # return min(self.paths_with_stats, key=lambda x: x[1])
+
+    def maximize_elevation_gain(self, percent_shortest_path):
+        shortest_path_len = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+        cutoff_dist = shortest_path_len * percent_shortest_path
+
+        self.get_all_paths(self.G, self.start, self.end, cutoff_dist)
+        return max(self.paths_with_stats, key=lambda x: x[1])</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.dfs_get_all_paths"><code class="name flex">
+<span>def <span class="ident">dfs_get_all_paths</span></span>(<span>self, graph, start, goal, max_length)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dfs_get_all_paths(self, graph, start, goal, max_length):
+    paths = []
+
+    def dfs(current, le, current_path, visited):
+        if current == goal:
+            if le &gt; max_length:
+                return
+            else:
+                current_path.append(current)
+                paths.append(current_path)
+                # print (&#34;This path length:&#34;,length)
+                # print (&#34;path found&#34;)
+                return
+        if le &gt; max_length:
+            return
+        for u, next_node, data in graph.edges(current, data=True):
+            if next_node in visited:
+                continue
+            dfs(next_node, le + abs(self.get_cost(graph, current, next_node)), current_path + [current],
+                visited + [next_node])
+        return
+
+    dfs(start, 0, [], [])
+    print(&#34;Total paths:&#34;, len(paths))
+
+    min_val = sys.maxsize
+    max_val = -1 * sys.maxsize
+    min_path, max_path = [], []
+    for path in paths:
+        elevation_data = self.get_elevation_of_path(graph, path)
+        if min_val != min(elevation_data, min_val):
+            min_val = elevation_data
+            min_path = path
+        if max_val != max(elevation_data, max_val):
+            max_val = elevation_data
+            max_path = path
+    return min_path, max_path</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_all_paths"><code class="name flex">
+<span>def <span class="ident">get_all_paths</span></span>(<span>self, graph, source, target, allowed_hops)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_paths(self, graph, source, target, allowed_hops):
+    # [[length, elevation_gain, [path]]]
+    graph_proj = ox.project_graph(graph)
+    self.paths = list(nx.all_simple_paths(graph_proj, source, target, allowed_hops))
+    min_val = sys.maxsize
+    max_val = -1 * sys.maxsize
+    min_path, max_path = [], []
+    for path in self.paths:
+        print(&#34;Path is&#34;, path)
+        elevation_data = self.get_elevation_of_path(graph_proj, path)
+        length_data = self.get_length_of_path(graph_proj, path)
+        if min_val != min(elevation_data, min_val) and length_data &lt; can_travel:
+            min_val = elevation_data
+            min_path = path
+        if max_val != max(elevation_data, max_val) and length_data &lt; can_travel:
+            max_val = elevation_data
+            max_path = path
+    return min_path, max_path</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_cost"><code class="name flex">
+<span>def <span class="ident">get_cost</span></span>(<span>self, graph_projection, a, b)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_cost(self, graph_projection, a, b):
+    return graph_projection.edges[a, b, 0][&#39;length&#39;]</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_elevation_of_path"><code class="name flex">
+<span>def <span class="ident">get_elevation_of_path</span></span>(<span>self, graph, path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_elevation_of_path(self, graph, path):
+    elevation_cost = 0
+    if not path:
+        return 0
+    for i in range(len(path) - 1):
+        nodeA = path[i]
+        nodeB = path[i + 1]
+
+        # method 1: using node_info
+        elevation_data = graph.nodes[nodeB][&#39;elevation&#39;] - graph.nodes[nodeA][&#39;elevation&#39;]
+
+        # method 2: using edge_info
+        # edge_data = self.G.edges[nodeA, nodeB, 0]
+        # elevation_data = edge_data[&#39;grade&#39;] * edge_data[&#39;length&#39;]
+
+        if elevation_data &gt; 0:
+            elevation_cost += elevation_data
+    return elevation_cost</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_gmap_ground_truth"><code class="name flex">
+<span>def <span class="ident">get_gmap_ground_truth</span></span>(<span>self, source, destination)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_gmap_ground_truth(self, source, destination):
+    routes = self.gmap_client.directions(source, destination, mode=&#34;walking&#34;)
+    steps = routes[0][&#34;legs&#34;][0][&#34;steps&#34;]
+
+    sampled_waypoints = []
+    skip = 1
+
+    if len(steps) &gt; 20:
+        skip = len(steps) // 20 + 1
+
+    i = 0
+    while i &lt; len(steps) - 1:
+        sampled_waypoints.append({
+            &#34;Lat&#34;: steps[i][&#34;start_location&#34;][&#34;lat&#34;],
+            &#34;Long&#34;: steps[i][&#34;start_location&#34;][&#34;lng&#34;],
+        })
+        i += skip
+
+    sampled_waypoints.append({
+        &#34;Lat&#34;: steps[len(steps) - 1][&#34;end_location&#34;][&#34;lat&#34;],
+        &#34;Long&#34;: steps[len(steps) - 1][&#34;end_location&#34;][&#34;lng&#34;],
+    })
+
+    return sampled_waypoints</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_length_of_path"><code class="name flex">
+<span>def <span class="ident">get_length_of_path</span></span>(<span>self, graph, path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_length_of_path(self, graph, path):
+    length_cost = 0
+    if not path:
+        return 0
+    for i in range(len(path) - 1):
+        nodeA = path[i]
+        nodeB = path[i + 1]
+
+        edge_data = graph.edges[nodeA, nodeB, 0]
+        length_cost += edge_data[&#39;length&#39;]
+
+    return length_cost</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_node"><code class="name flex">
+<span>def <span class="ident">get_node</span></span>(<span>self, loc)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_node(self, loc):
+    return ox.get_nearest_node(self.G, loc)</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_shortest_path"><code class="name flex">
+<span>def <span class="ident">get_shortest_path</span></span>(<span>self, mode)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_shortest_path(self, mode):
+    # call when entered from UI
+    # self.set_start_end()
+
+    # Baseline
+    if mode == &#34;baseline&#34;:
+        path = ox.distance.shortest_path(self.G, self.start, self.end, weight=&#39;length&#39;)
+        dist, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, path, min_weight=&#39;length&#39;)
+        logs = {}
+        logs[&#39;dist&#39;] = dist
+        logs[&#39;min_dist_grade&#39;] = min_dist_grade
+        return path, logs
+    elif mode == &#39;minimize&#39;:
+        return self.minimize_elevation_gain_ML(self.x)
+    elif mode == &#39;maximize&#39;:
+        return self.maximize_elevation_gain_ML(self.x)</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_shortest_path_length"><code class="name flex">
+<span>def <span class="ident">get_shortest_path_length</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>arguments: start and end locations
+returns: the shortest path length between the start and the end nodes
+Note: it can also be modified to return the path as list of nodes using backtrace()
+credits: <a href="https://github.com/blkrt/dijkstra-python">https://github.com/blkrt/dijkstra-python</a></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_shortest_path_length(self):
+    &#39;&#39;&#39;
+        arguments: start and end locations
+        returns: the shortest path length between the start and the end nodes
+        Note: it can also be modified to return the path as list of nodes using backtrace()
+        credits: https://github.com/blkrt/dijkstra-python
+    &#39;&#39;&#39;
+
+    def backtrace(previous, start, end):
+        &#39;&#39;&#39;
+            returns the shortest path between start and end as a list of nodes
+        &#39;&#39;&#39;
+        node = end
+        path = []
+        while node != start:
+            path.append(node)
+            node = previous[node]
+        path.append(node)
+        path.reverse()
+        return path
+
+    def get_shortest_edge_length(node1, node2):
+        &#39;&#39;&#39;
+            returns the length of the shortest edge between a pair of neighboring nodes
+        &#39;&#39;&#39;
+        edges = self.G.get_edge_data(node1, node2)
+        if len(edges.keys()) == 1:
+            return edges[0][&#39;length&#39;]
+
+        edge_to_len = {}
+        for key in edges.keys():
+            edge_to_len[key] = edges[key][&#39;length&#39;]
+        min_key = min(edge_to_len, key=edge_to_len.get)
+        return edges[min_key][&#39;length&#39;]
+
+    previous = {}
+    distance = {v: np.inf for v in list(self.G.nodes())}
+    visited = set()
+    pq = PriorityQueue()
+    distance[self.start] = 0
+    pq.put((distance[self.start], self.start))
+
+    while pq.qsize():
+        dist, node = pq.get()
+        visited.add(node)
+        # print(&#39;Visiting {}&#39;.format(node))
+
+        for nbr in dict(self.G.adjacency()).get(node):
+            edge_length = get_shortest_edge_length(node, nbr)
+            # print(edge_length)
+            path_length = distance[node] + edge_length
+            if path_length &lt; distance[nbr]:
+                distance[nbr] = path_length
+                previous[nbr] = node
+                if nbr not in visited:
+                    visited.add(nbr)
+                    pq.put((distance[nbr], nbr))
+                else:
+                    _, _ = pq.get((distance[nbr], nbr))
+                    pq.put((distance[nbr], nbr))
+
+    shortest_path = backtrace(previous, self.start, self.end)  # shortest path with the list of intermediate nodes
+    # print(shortest_path)
+    return distance[self.end]</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.maximize_elevation_gain"><code class="name flex">
+<span>def <span class="ident">maximize_elevation_gain</span></span>(<span>self, percent_shortest_path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maximize_elevation_gain(self, percent_shortest_path):
+    shortest_path_len = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+    cutoff_dist = shortest_path_len * percent_shortest_path
+
+    self.get_all_paths(self.G, self.start, self.end, cutoff_dist)
+    return max(self.paths_with_stats, key=lambda x: x[1])</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.maximize_elevation_gain_ML"><code class="name flex">
+<span>def <span class="ident">maximize_elevation_gain_ML</span></span>(<span>self, percent_shortest_path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maximize_elevation_gain_ML(self, percent_shortest_path):
+    # Enforce x% of shortest path 1.0 or larger
+    if percent_shortest_path &lt; 1.0:
+        raise Exception(&#34;Cannot find a path shorter than the shortest path.&#34;)
+
+    # Find shortest distance path
+    min_dist, min_dist_path = nx.single_source_dijkstra(self.G, self.start, self.end, weight=&#39;length&#39;)
+    _, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, min_dist_path, min_weight=&#39;length&#39;)
+    # Set maximum distance willing to travel
+    max_dist = min_dist * percent_shortest_path
+
+    # Find total distance and grade gain of the edges for normalization
+    total_dist = 0
+    total_grade = 0
+    for u, v, data in self.G.edges(data=True):
+        total_dist += data[&#39;length&#39;]
+        total_grade += data[&#39;grade&#39;]
+
+    # Dictionary for all paths found within max distance
+    paths_found = [{&#39;path&#39;: min_dist_path, &#39;length&#39;: min_dist,
+                    &#39;grade&#39;: min_dist_grade, &#39;keys&#39;: min_dist_keys}]
+
+    G_processed = copy.deepcopy(self.G)
+
+    def minimize_alpha(alpha):
+        for u, v, k, data in self.G.edges(keys=True, data=True):
+            G_processed.add_edge(u, v, key=k, grade=
+            max(0, (1 - alpha) / (1e-6 + data[&#39;grade&#39;])) + (alpha) / (1e-6 + data[&#39;length&#39;]))
+
+        # Find shortest path for new grade
+        path = ox.distance.shortest_path(G_processed, self.start, self.end, weight=&#39;grade&#39;)
+        path_length, path_grade, path_keys = find_path_edges_max(self.G, path)
+
+        # If the path found has a shorter distance than the max,
+        if path_length &lt;= max_dist:
+            # Add it to the list of paths to pick from
+            # print(&#34;path_length&#34;, path_length, path_grade)
+            paths_found.append({&#39;path&#39;: path, &#39;length&#39;: path_length,
+                                &#39;grade&#39;: path_grade, &#39;keys&#39;: path_keys})
+        # print(&#34;alpha:&#34;, alpha, &#34;loss:&#34;, (max_dist - path_length) ** 2)
+        return (max_dist - path_length) ** 2
+
+    s = time.time()
+    a = minimize_scalar(minimize_alpha, method=&#34;Bounded&#34;, bounds=(0, 1))
+    # a = minimize(minimize_alpha, 0.5, method = &#34;Nelder-Mead&#34;)
+    # a = differential_evolution(minimize_alpha, bounds = [(0, 1)])
+    print(&#34;Time taken&#34;, time.time() - s, a)
+
+    # Return the lowest grade gain within max distance
+    logs = {}
+    best_path_max = max(paths_found, key=lambda d: d[&#39;grade&#39;])
+    logs[&#39;best_path_dist_max&#39;] = best_path_max[&#39;length&#39;]
+    logs[&#39;best_path_gain_max&#39;] = best_path_max[&#39;grade&#39;]
+    best_path_max = best_path_max[&#39;path&#39;]
+
+    # best_path_min = min(paths_found, key=lambda d: d[&#39;grade&#39;])
+    # logs[&#39;best_path_dist_min&#39;] = best_path_min[&#39;length&#39;]
+    # logs[&#39;best_path_gain_min&#39;] = best_path_min[&#39;grade&#39;]
+    # best_path_min = best_path_min[&#39;path&#39;]
+
+    logs[&#39;shortest_path_dist&#39;] = min_dist
+    logs[&#39;min_dist_grade&#39;] = min_dist_grade
+
+    return best_path_max, logs</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.minimize_elevation_gain"><code class="name flex">
+<span>def <span class="ident">minimize_elevation_gain</span></span>(<span>self, percent_shortest_path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def minimize_elevation_gain(self, percent_shortest_path):
+    shortest_path = nx.shortest_path(self.G, self.start, self.end, weight=&#39;length&#39;)
+    shortest_path_dist = nx.shortest_path_length(self.G, self.start, self.end, &#39;length&#39;)
+    cutoff_dist = shortest_path_dist * percent_shortest_path
+    print(&#34;cutoff&#34;, cutoff_dist, &#34;shortest&#34;, shortest_path_dist)
+
+    self.get_all_paths(self.G, self.start, self.end, len(shortest_path) + 1)</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.minimize_elevation_gain_ML"><code class="name flex">
+<span>def <span class="ident">minimize_elevation_gain_ML</span></span>(<span>self, percent_shortest_path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def minimize_elevation_gain_ML(self, percent_shortest_path):
+    # Enforce x% of shortest path 1.0 or larger
+    if percent_shortest_path &lt; 1.0:
+        raise Exception(&#34;Cannot find a path shorter than the shortest path.&#34;)
+
+    # Find shortest distance path
+    min_dist, min_dist_path = nx.single_source_dijkstra(self.G, self.start, self.end, weight=&#39;length&#39;)
+    _, min_dist_grade, min_dist_keys = find_path_edges_min(self.G, min_dist_path, min_weight=&#39;length&#39;)
+    # Set maximum distance willing to travel
+    max_dist = min_dist * percent_shortest_path
+
+    # Find total distance and grade gain of the edges for normalization
+    total_dist = 0
+    total_grade = 0
+    for u, v, data in self.G.edges(data=True):
+        total_dist += data[&#39;length&#39;]
+        total_grade += data[&#39;grade&#39;]
+
+    # Dictionary for all paths found within max distance
+    paths_found = [{&#39;path&#39;: min_dist_path, &#39;length&#39;: min_dist,
+                    &#39;grade&#39;: min_dist_grade, &#39;keys&#39;: min_dist_keys}]
+
+    G_processed = copy.deepcopy(self.G)
+
+    def minimize_alpha(alpha):
+
+        for u, v, k, data in self.G.edges(keys=True, data=True):
+            G_processed.add_edge(u, v, key=k, grade=
+            max(0, alpha * data[&#39;grade&#39;] * data[&#39;length&#39;]) +
+            (1 - alpha) * data[&#39;length&#39;])
+
+        # Find shortest path for new grade
+        path = ox.distance.shortest_path(G_processed, self.start, self.end, weight=&#39;grade&#39;)
+        path_length, path_grade, path_keys = find_path_edges_min(self.G, path)
+
+        # If the path found has a shorter distance than the max,
+        if path_length &lt;= max_dist:
+            # Add it to the list of paths to pick from
+            # print(&#34;path_length&#34;, path_length, path_grade)
+            paths_found.append({&#39;path&#39;: path, &#39;length&#39;: path_length,
+                                &#39;grade&#39;: path_grade, &#39;keys&#39;: path_keys})
+
+        # print(&#34;alpha:&#34;, alpha, &#34;loss:&#34;, (max_dist - path_length) ** 2)
+        return (max_dist - path_length) ** 2
+
+    s = time.time()
+    a = minimize_scalar(minimize_alpha, method=&#34;Bounded&#34;, bounds=(0, 1))
+    # a = minimize(minimize_alpha, 0.5, bounds = [(0,1)])
+    # a = differential_evolution(minimize_alpha, bounds = [(0, 1)])
+    print(&#34;Time taken&#34;, time.time() - s, a)
+
+    # Return the lowest grade gain within max distance
+    logs = {}
+    # best_path_max = max(paths_found, key=lambda d: d[&#39;grade&#39;])
+    # logs[&#39;best_path_dist_max&#39;] = best_path_max[&#39;length&#39;]
+    # logs[&#39;best_path_gain_max&#39;] = best_path_max[&#39;grade&#39;]
+    # best_path_max = best_path_max[&#39;path&#39;]
+
+    best_path_min = min(paths_found, key=lambda d: d[&#39;grade&#39;])
+    logs[&#39;best_path_dist_min&#39;] = best_path_min[&#39;length&#39;]
+    logs[&#39;best_path_gain_min&#39;] = best_path_min[&#39;grade&#39;]
+    best_path_min = best_path_min[&#39;path&#39;]
+
+    logs[&#39;shortest_path_dist&#39;] = min_dist
+    logs[&#39;min_dist_grade&#39;] = min_dist_grade
+
+    return best_path_min, logs</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.plot_route"><code class="name flex">
+<span>def <span class="ident">plot_route</span></span>(<span>self, route)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_route(self, route):
+    fig, ax = ox.plot_graph_route(self.G, route, route_linewidth=6, node_size=0, bgcolor=&#39;k&#39;)
+    plt.show()</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.set_max_deviation"><code class="name flex">
+<span>def <span class="ident">set_max_deviation</span></span>(<span>self, x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_max_deviation(self, x):
+    self.x = x</code></pre>
+</details>
+</dd>
+<dt id="EleNa.src.app.data_model.shortest_path_experiments.Routing.set_start_end"><code class="name flex">
+<span>def <span class="ident">set_start_end</span></span>(<span>self, start_loc, end_loc)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_start_end(self, start_loc, end_loc):
+    self.start = self.get_node(start_loc)
+    self.end = self.get_node(end_loc)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="EleNa.src.app.data_model" href="index.html">EleNa.src.app.data_model</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.find_path_edges" href="#EleNa.src.app.data_model.shortest_path_experiments.find_path_edges">find_path_edges</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.find_path_edges_max" href="#EleNa.src.app.data_model.shortest_path_experiments.find_path_edges_max">find_path_edges_max</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.find_path_edges_min" href="#EleNa.src.app.data_model.shortest_path_experiments.find_path_edges_min">find_path_edges_min</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing">Routing</a></code></h4>
+<ul class="">
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.dfs_get_all_paths" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.dfs_get_all_paths">dfs_get_all_paths</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_all_paths" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_all_paths">get_all_paths</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_cost" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_cost">get_cost</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_elevation_of_path" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_elevation_of_path">get_elevation_of_path</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_gmap_ground_truth" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_gmap_ground_truth">get_gmap_ground_truth</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_length_of_path" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_length_of_path">get_length_of_path</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_node" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_node">get_node</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_shortest_path" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_shortest_path">get_shortest_path</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.get_shortest_path_length" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.get_shortest_path_length">get_shortest_path_length</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.maximize_elevation_gain" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.maximize_elevation_gain">maximize_elevation_gain</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.maximize_elevation_gain_ML" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.maximize_elevation_gain_ML">maximize_elevation_gain_ML</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.minimize_elevation_gain" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.minimize_elevation_gain">minimize_elevation_gain</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.minimize_elevation_gain_ML" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.minimize_elevation_gain_ML">minimize_elevation_gain_ML</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.plot_route" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.plot_route">plot_route</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.set_max_deviation" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.set_max_deviation">set_max_deviation</a></code></li>
+<li><code><a title="EleNa.src.app.data_model.shortest_path_experiments.Routing.set_start_end" href="#EleNa.src.app.data_model.shortest_path_experiments.Routing.set_start_end">set_start_end</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
