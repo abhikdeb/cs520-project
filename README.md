@@ -1,5 +1,5 @@
 # EleNA : Elevation based Navigation
-====
+
 
 ### Description
 
@@ -46,6 +46,45 @@ conda activate elena
 Install the required packages from the [requirements file](EleNa/docs/requirements.txt)
 
 ```shell script
-pip install -r requirements.txt
+conda install --file requirements.txt
 ```
+
+
+### Running the app
+
+---
+
+Before running the app, make sure the `PYTHONPATH` is set to the root directory of the project.
+
+Access [this](EleNa/scripts) folder for triggering the scripts to run the Flask API.
+
+For Linux/Unix systems, 
+
+```shell script
+./RunElenaApp.sh
+``` 
+
+For Windows systems,
+
+```shell script
+./RunElenaApp.bat
+```
+
+
+### Running the Tests
+
+---
+
+PyTest is used to automate the testing process. 
+Please read [this](https://docs.pytest.org/en/stable/contents.html#toc) to understand its usage.
+
+From the [src](EleNa/src) folder, execute the following to build and run the tests.
+
+```shell script
+pytest
+```
+
+### Running the Documentation server
+
+PyDoc3 is used to run the pydoc
 
