@@ -15,10 +15,8 @@ while limiting the total distance between the two locations to x% of the shortes
 
 ### Index
 
-1. Data Model
-2. Querying from Data Model
-3. Routing Algorithm
-4. Rendering the computed output
+1. Architecture
+2. Evaluation
 
 ### Components
 
@@ -47,3 +45,26 @@ while limiting the total distance between the two locations to x% of the shortes
   - Entire Web framework
 
 --------------------------------------------------------
+
+### Evaluation
+src/test/test_x_percent.py: This is the primary evaluation module.
+The evaluation primarily does the following:
+- Instantiates Google Directions Service for querying ground-truth
+- Randomly samples 50-100 data points (both source and destination) from OSMNX's Amherst map
+- For each pair of source and destination:
+  - Computes EleNa route for maximization task (using 200% as the maximum deviation from ground-truth)
+  - Computes EleNa route for minimization task (using 200% as the maximum deviation from ground-truth)
+  - Queries ground-truth using Google Directions service
+  
+- Verifies that the routes returned by EleNa (for both minimization/maximization tasks) are within x% of the ground-truth, for each of the data-points
+- Generates plots (using matplotlib.pyplot) for:
+  - Elevation gain in routes computed by EleNa (for both minimization/maximization tasks) against the elevation in the ground-truth route
+  - percentage deviation of distance in routes computed by EleNa compared to ground-truth
+
+Here are the plots following the evaluation of EleNa:
+![Plot 1](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/elevation_plot.png)
+![Plot 2](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/percentage_deviation_plot.png)
+
+The first plot shows the results for 50 data-points (both maximization and minimization task) - we see that EleNa performs quite well in both the maximization and minimization tasks. For maximization task, routes computed by EleNa result in an average elevation gain of ~8 meters. However, EleNa seems to perform, on average, better in the elevation minimizsation task, with ~15 meters reduction in elevation compared to the ground-truth.
+
+The second plot shows the percentage deviation of distance in EleNa routes compared to the ground-truth, for the same 50 data-points that we used in the first plot, but with a constraint of x=150%. It is clear from the plot taht routes computed by EleNa do not exceed 150% of the ground truth distance, for both the maximization and minimization task.
