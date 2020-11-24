@@ -212,7 +212,7 @@ class Routing:
                                     'ele_gain': path_ele_gain, 'edge_keys': path_edge_keys})
 
             objective = (max_dist - path_length) ** 2
-            print("alpha:", alpha, "objective:", objective)
+            # print("alpha:", alpha, "objective:", objective)
 
             return objective
 
