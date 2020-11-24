@@ -12,8 +12,15 @@ g_maps = Client(key=Config.API_KEY)
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
 def home():
+    """
+    Flask Gateway to the home page of the web server.
+
+    Returns:
+        Flask rendered HTML page
+
+    """
     page_title = 'Home Page'
-    default_coords = {'lat': 42.3732, 'lng': -72.5199}
+    default_coords = {'lat': 42.3732, 'lng': -72.5199}  # Default location is Amherst, MA
     default_zoom = 15
     data_vars = {
         'zoom': default_zoom,
@@ -23,14 +30,17 @@ def home():
     return render_template('home.html', title=page_title, data=data_vars)
 
 
-@app.route('/index', methods=['GET', 'POST'])
-def index():
-    user = {'username': 'Test_User_1'}
-    return render_template('index.html', title='Home Page', user=user)  #
-
-
 @app.route('/submit<data>', methods=['GET', 'POST'])
 def submit(data):
+    """
+    Gateway to computing the route on submit from flask.
+    Args:
+        data: Contains encoded string extract constraints for route computations
+
+    Returns:
+        Resulting route info to be rendered.
+
+    """
     if bool(data):
         data = data.replace("%2C", ",")
         data = data.replace("%20", " ")
@@ -39,18 +49,24 @@ def submit(data):
                          g_maps.geocode(source)[0]['geometry']['location']['lng']]
         destination_coords = [g_maps.geocode(destination)[0]['geometry']['location']['lat'],
                               g_maps.geocode(destination)[0]['geometry']['location']['lng']]
-
-        print(source_coords)
-        print(destination_coords)
-        print(percent)
-        print(maxmin)
-
-        result = get_route(source_coords, destination_coords, float(percent) / 100.0, maxmin)
-        print(result)
+        result = compute_route(source_coords, destination_coords, float(percent) / 100.0, maxmin)
         return result
 
 
-def get_route(source, destination, per, task):
+def compute_route(source, destination, per, task):
+    """
+     Returns the best route with the given constraints.
+
+    Args:
+        source: Coordinates of the starting position
+        destination: Coordinates of the destination
+        per: x percentage of the shortest path to be computed
+        task: maximize or minimize
+
+    Returns:
+        JSON object containing information on the routes to be rendered
+
+    """
     model_obj = DataModel('Amherst, MA')
     routing_obj = Routing(model_obj)
 

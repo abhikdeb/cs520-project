@@ -48,9 +48,11 @@
 </div>
 <script>
     // Variable to store the rendered map
-    let map, mapOptions, directionsService, directionsDisplay, directionsDisplayGroundTruth;
+    let map, mapOptions, directionsService, directionsDisplay, directionsDisplayGroundTruth, info_vars;
 
     function initMap() {
+
+        let marker1, marker2;
 
         // Set Map options here
         mapOptions = {
@@ -73,12 +75,12 @@
             suppressMarkers: true
         });
 
-        let marker1, marker2;
+        // Set action on submitting the form
         $("#submit").click(function () {
             $("body").css("cursor", "progress");
-            var objective;
-            var opt_type = document.getElementsByName('max-min');
-            for (i = 0; i < opt_type.length; i++) {
+            let objective;
+            let opt_type = document.getElementsByName('max-min');
+            for (let i = 0; i < opt_type.length; i++) {
                 if (opt_type[i].checked) {
                     objective = opt_type[i].value;
                 }
@@ -88,14 +90,16 @@
                 encodeURIComponent($("#destination").val()) + ":" +
                 encodeURIComponent($("#percent").val()) + ":" +
                 encodeURIComponent(objective)).done(function (data) {
-                elevation = data.elevation
-                distance = data.distance
-                waypoints = data.waypoints
-                ground_truth = data.ground_truth
-                groundTruthElevation = data.groundTruthElevation
-                groundTruthDistance = data.groundTruthDistance
-                upperLimit = data.upperLimit
-                renderOutputRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, waypoints, ground_truth);
+                    info_vars = {
+                        elevation: data.elevation,
+                        distance: data.distance,
+                        waypoints: data.waypoints,
+                        ground_truth: data.ground_truth,
+                        groundTruthElevation: data.groundTruthElevation,
+                        groundTruthDistance: data.groundTruthDistance,
+                        upperLimit: data.upperLimit
+                    };
+                renderOutputRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, info_vars.waypoints, info_vars.ground_truth);
                 if (marker1) {
                     marker1.setMap(null);
                 }
@@ -106,6 +110,7 @@
             })
         });
 
+        // Function to place a new marker on the map
         function placeMarker(location) {
             return new google.maps.Marker({
                 position: location,
@@ -114,6 +119,8 @@
         }
 
         let geocoder = new google.maps.Geocoder();
+
+        // Listener for a click on the map to place marker and extract locations
         google.maps.event.addListener(map, 'click', function (event) {
             geocoder.geocode({
                 'latLng': event.latLng
@@ -121,7 +128,6 @@
                 if (status == google.maps.GeocoderStatus.OK) {
                     if (results[0]) {
                         document.activeElement.id.value = results[0].formatted_address;
-                        //alert(results[0].formatted_address);
                         if (!$("#source").val()) {
                             if (marker1) {
                                 marker1.setMap(null);
@@ -146,11 +152,9 @@
 
         let source_input = document.getElementById('source');
         let source_sb = new google.maps.places.SearchBox(source_input);
-
         map.addListener('bounds_changed', function () {
             source_sb.setBounds(map.getBounds());
         });
-
         source_sb.addListener('places_changed', function () {
             let places = source_sb.getPlaces();
             if (places.length == 0) {
@@ -221,11 +225,11 @@
         let waypts2 = [];
         for (let i = 1; i < groundTruth.length - 1; i++) {
             waypts2.push({
-                location: new google.maps.LatLng(groundTruth[i].Lat, groundTruth[i].Long),
-                //stopover: true
+                location: new google.maps.LatLng(groundTruth[i].Lat, groundTruth[i].Long)
             });
         }
 
+        // Render the computed route and display results
         directionsService.route({
             origin: new google.maps.LatLng(checkboxArray[0].Lat, checkboxArray[0].Long),
             destination: new google.maps.LatLng(checkboxArray[checkboxArray.length - 1].Lat, checkboxArray[checkboxArray.length - 1].Long),
@@ -235,20 +239,20 @@
         }, function (response, status) {
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
-                var route = response.routes[0];
-                var summaryPanel = document.getElementById('info');
+                let route = response.routes[0];
+                let summaryPanel = document.getElementById('info');
                 summaryPanel.innerHTML = '';
-                // For each route, display summary information.
-                summaryPanel.innerHTML += '<p class="info-header"><b>Total Elevation Gain: </b><span class="info-value">' + elevation + '</span> m</p>';
-                summaryPanel.innerHTML += '<p class="info-header"><b>Total Distance: </b><span class="info-value">' + distance + '</span> m</p>';
-                summaryPanel.innerHTML += '<p class="info-header"><b>Shortest path Elevation Gain: </b><span class="info-value">' + groundTruthElevation + '</span> m</p>';
-                summaryPanel.innerHTML += '<p class="info-header"><b>Shortest Distance: </b><span class="info-value">' + groundTruthDistance + '</span> m</p>';
-                summaryPanel.innerHTML += '<p class="info-header"><b>X % of shortest distance: </b><span class="info-value">' + upperLimit + '</span> m</p>';
+                summaryPanel.innerHTML += '<p class="info-header"><b>Total Elevation Gain: </b><span class="info-value">' + info_vars.elevation + '</span> m</p>';
+                summaryPanel.innerHTML += '<p class="info-header"><b>Total Distance: </b><span class="info-value">' + info_vars.distance + '</span> m</p>';
+                summaryPanel.innerHTML += '<p class="info-header"><b>Shortest path Elevation Gain: </b><span class="info-value">' + info_vars.groundTruthElevation + '</span> m</p>';
+                summaryPanel.innerHTML += '<p class="info-header"><b>Shortest Distance: </b><span class="info-value">' + info_vars.groundTruthDistance + '</span> m</p>';
+                summaryPanel.innerHTML += '<p class="info-header"><b>X % of shortest distance: </b><span class="info-value">' + info_vars.upperLimit + '</span> m</p>';
             } else {
-                window.alert('Directions request failed due to ' + status);
+                window.alert('ERROR: ' + status);
             }
         });
 
+        // Rendering the ground truth
         directionsService.route({
             origin: new google.maps.LatLng(groundTruth[0].Lat, groundTruth[0].Long),
             destination: new google.maps.LatLng(groundTruth[groundTruth.length - 1].Lat, groundTruth[groundTruth.length - 1].Long),
@@ -257,10 +261,9 @@
             travelMode: 'WALKING'
         }, function (response, status) {
             if (status === 'OK') {
-                console.log("shibingok");
                 directionsDisplayGroundTruth.setDirections(response);
             } else {
-                window.alert('Directions request failed due to ' + status);
+                window.alert('ERROR: ' + status);
             }
         });
     }
