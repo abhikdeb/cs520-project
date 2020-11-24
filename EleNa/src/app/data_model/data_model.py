@@ -1,5 +1,5 @@
 import osmnx as ox
-import pickle as pickle
+import pickle5 as pickle
 import json
 
 
@@ -7,8 +7,8 @@ class DataModel:
 
     def __init__(self, city_name='Amherst, MA'):
         self.config, self.loaded_graphs, self.G = {}, {}, {}
-        self.load_config('./app/config.json')
-        self.graphs_location = self.config.get('app')['graphs_location']
+        self.load_config('../config.json')
+        self.graphs_location = './stored_locations'
         self.load_locations_metadata()
 
         if city_name in self.loaded_graphs:
@@ -33,11 +33,11 @@ class DataModel:
             cfg_file.close()
 
     def load_locations_metadata(self):
-        with open(self.graphs_location + 'metadata.json') as f:
+        with open('./stored_locations/metadata.json') as f:
             self.loaded_graphs = json.load(f)
 
     def update_locations_metadata(self):
-        with open(self.graphs_location + 'metadata.json', "w") as outfile:
+        with open('./stored_locations/metadata.json', "w") as outfile:
             json.dump(self.loaded_graphs, outfile, indent=4)
 
     def plot_graph(self):
