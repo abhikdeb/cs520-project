@@ -84,7 +84,17 @@ From the [src](EleNa/src) folder, execute the following to build and run the tes
 pytest
 ```
 
-### Running the Documentation server
+### Generating the documentation
 
-PyDoc3 is used to run the pydoc
+---
+
+[PyDoc3](https://pdoc3.github.io/pdoc/) is used to run the documentation service.
+
+The generated documentation of the code can be accessed [here](EleNa/docs/documentation/EleNa/index.html) 
+
+Run the below to generate the documentation from the source code.
+
+```shell script
+pdoc --html EleNa --output-dir documentation
+```
 
