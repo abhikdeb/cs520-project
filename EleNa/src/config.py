@@ -1,7 +1,6 @@
 import os
 import json
 
-
 class Config(object):
     cfg = {}
     try:

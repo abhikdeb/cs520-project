@@ -10,10 +10,12 @@ from EleNa.src.app.data_model.shortest_path import Routing
 
 from EleNa.src.config import Config
 
+import matplotlib.pyplot as plt
+
 
 class Evaluation:
 
-    def __init__(self, x=50, city_name='Amherst, MA'):
+    def __init__(self, x=1.5, city_name='Amherst, MA', n_tests=50):
         self.config = {}
         self.key = Config.API_KEY
 
@@ -27,10 +29,9 @@ class Evaluation:
         self.data_model = DataModel()
         self.graph = self.data_model.get_graph()
         print(self.data_model.get_stats())
-        self.num_tests = 100
-        self.x = 1.5
+        self.num_tests = n_tests
 
-        self.test_x_percent()
+        self.eval()
 
     def load_config(self, loc):
         try:
@@ -41,7 +42,7 @@ class Evaluation:
         else:
             cfg_file.close()
 
-    def test_x_percent(self):
+    def eval(self):
         # setup EleNa for evaluation purposes
         routing = Routing(self.data_model)
         nodes = self.graph.nodes()
@@ -49,6 +50,12 @@ class Evaluation:
         # randomly sample nodes from this list of nodes
         from_nodes = random.sample(nodes, self.num_tests)
         to_nodes = random.sample(nodes, self.num_tests)
+
+        max_task_elev = []
+        min_task_elev = []
+        gt_elev = []
+        max_task_dist_per = []
+        min_task_dist_per = []
 
         for i in range(self.num_tests):
             # get results from EleNa
@@ -65,19 +72,55 @@ class Evaluation:
             ground_truth = routes[0]["legs"][0]["distance"]["value"]
             print(json.dumps(routes, indent=4))
 
-            if ground_truth * self.x < log_min['best_path_dist_min']:
+            if ground_truth * self.x < log_min['optimal_path_dist']:
                 print("Elevation minimization task failed ground-truth verification for:")
                 self.dump_evalution_params()
                 print("\t From: ", from_node)
                 print("\t To: ", to_node)
-                sys.exit("Error in verification. Exiting!")
+                # sys.exit("Error in verification. Exiting!")
 
-            if ground_truth * self.x < log_max['best_path_dist_max']:
+            if ground_truth * self.x < log_max['optimal_path_dist']:
                 print("Elevation maximization task failed ground-truth verification for:")
                 self.dump_evalution_params()
                 print("\t From: ", from_node)
                 print("\t To: ", to_node)
-                sys.exit("Error in verification. Exiting!")
+                # sys.exit("Error in verification. Exiting!")
+
+            max_task_elev.append(log_max['optimal_path_gain'])
+            min_task_elev.append(log_min['optimal_path_gain'])
+            gt_elev.append(log_min['shortest_path_gain'])
+
+            max_task_dist_per.append(log_max['optimal_path_dist'] * 100 / ground_truth)
+            min_task_dist_per.append(log_min['optimal_path_dist'] * 100 / ground_truth)
+
+        plt.scatter([i for i in range(self.num_tests)], max_task_elev, color='blue',
+                    label='EleNa - elevation from maximization task', s=8)
+        plt.scatter([i for i in range(self.num_tests)], min_task_elev, color='green',
+                    label='EleNa - elevation from minimization task', s=8)
+        plt.scatter([i for i in range(self.num_tests)], gt_elev, color='red', label='Ground truth elevation', s=8)
+        plt.vlines([i for i in range(self.num_tests)], ymin=0, ymax=200, color='black', linestyle="--", linewidth=1)
+        plt.xticks([])
+        plt.ylabel("Elevation (in metres)")
+        plt.legend()
+        plt.title(label="EleNa - evaluating elevation w.r.t. ground truth")
+        plt.tight_layout()
+        # plt.show()
+        plt.savefig('1.png')
+        plt.close()
+
+        plt.scatter([i for i in range(self.num_tests)], max_task_dist_per, color='blue',
+                    label='EleNa - maximization task', s=8)
+        plt.scatter([i for i in range(self.num_tests)], min_task_dist_per, color='green',
+                    label='EleNa - minimization task', s=8)
+        plt.vlines([i for i in range(self.num_tests)], ymin=0, ymax=200, color='black', linestyle="--", linewidth=1)
+        plt.xticks([])
+        plt.ylabel("Percentage w.r.t ground truth")
+        plt.legend()
+        plt.title(label="EleNa - distance (x%) w.r.t. ground truth")
+        plt.tight_layout()
+        # plt.show()
+        plt.savefig('2.png')
+        plt.close()
 
     def dump_evalution_params(self):
         print(self.city_name, self.num_tests, self.x)
