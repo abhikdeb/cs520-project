@@ -10,11 +10,24 @@ def test_model_availability():
     dm = DataModel('Amherst, MA')
     assert dm.G != {}
 
-
 def test_config_value():
     d = DataModel('Amherst, MA')
     assert d.config != {}
 
+def test_load_locations_metadata_function():
+    dm = DataModel('Amherst, MA')
+    dm.load_locations_metadata()
+    assert dm.loaded_graphs != {}
+
+def test_load_config_function():
+    dm = DataModel('Amherst, MA')
+    dm.load_config('../app/config.json')
+    assert dm.config != {}
+
+def test_get_stats_function():
+    dm = DataModel('Amherst, MA')
+    num_nodes, num_edges = dm.get_stats()
+    assert num_nodes>=0 and num_edges>=0
 
 def test_evaluation():
     x = 1.6

@@ -1,6 +1,5 @@
 import os
 import json
-os.chdir("./EleNa/src")
 
 class Config(object):
     cfg = {}
