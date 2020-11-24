@@ -8,6 +8,7 @@ from EleNa.src.app.data_model.data_model import DataModel
 from scipy.optimize import minimize, minimize_scalar, differential_evolution
 import time
 import copy
+import sys
 import googlemaps
 
 from EleNa.src.config import Config
@@ -63,7 +64,6 @@ class Routing:
         self.x = 1.9
         self.paths_with_stats = None
 
-        # hardcoded: to be removed later
         start_loc = (42.432121, -72.4916)
         end_loc = (42.31338, -72.4672)  # (42.3857, -72.5298)
         self.set_start_end(start_loc, end_loc)
@@ -431,8 +431,6 @@ class Routing:
     #     self.paths_with_stats.append([self.get_length_of_path(path), self.get_elevation_of_path(path), path])
 
     def minimize_elevation_gain(self, percent_shortest_path):
-
-        # TODO: Replace with videsh algo (replace shortest path length)
         shortest_path = nx.shortest_path(self.G, self.start, self.end, weight='length')
         shortest_path_dist = nx.shortest_path_length(self.G, self.start, self.end, 'length')
         cutoff_dist = shortest_path_dist * percent_shortest_path
@@ -443,9 +441,6 @@ class Routing:
     # return min(self.paths_with_stats, key=lambda x: x[1])
 
     def maximize_elevation_gain(self, percent_shortest_path):
-
-        # TODO: Replace with videsh algo (replace shortest path length)
-
         shortest_path_len = nx.shortest_path_length(self.G, self.start, self.end, 'length')
         cutoff_dist = shortest_path_len * percent_shortest_path
 

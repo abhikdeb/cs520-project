@@ -207,7 +207,7 @@ class Routing:
             # If the path found has a shorter distance than the max,
             if path_length <= max_dist:
                 # Add it to the list of paths to pick from
-                print("path_length: {:.4f}, elevation_gain: {:.4f}".format(path_length, path_ele_gain))
+                # print("path_length: {:.4f}, elevation_gain: {:.4f}".format(path_length, path_ele_gain))
                 paths_found.append({'path': path, 'length': path_length,
                                     'ele_gain': path_ele_gain, 'edge_keys': path_edge_keys})
 
