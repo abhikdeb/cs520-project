@@ -47,7 +47,8 @@ while limiting the total distance between the two locations to x% of the shortes
 --------------------------------------------------------
 
 ### Evaluation
-src/test/test_x_percent.py: This is the primary evaluation module.
+#### Quantitative evaluation
+[This](https://github.com/abhikdeb/cs520-project/blob/e3c0245709bdfb7268acf376be080052d0709600/EleNa/src/test/test_x_percent.py#L1) is the primary evaluation module.
 The evaluation primarily does the following:
 - Instantiates Google Directions Service for querying ground-truth
 - Randomly samples 50-100 data points (both source and destination) from OSMNX's Amherst map
@@ -67,4 +68,7 @@ Here are the plots following the evaluation of EleNa:
 
 The first plot shows the results for 50 data-points (both maximization and minimization task) - we see that EleNa performs quite well in both the maximization and minimization tasks. For maximization task, routes computed by EleNa result in an average elevation gain of ~8 meters. However, EleNa seems to perform, on average, better in the elevation minimizsation task, with ~15 meters reduction in elevation compared to the ground-truth.
 
-The second plot shows the percentage deviation of distance in EleNa routes compared to the ground-truth, for the same 50 data-points that we used in the first plot, but with a constraint of x=150%. It is clear from the plot taht routes computed by EleNa do not exceed 150% of the ground truth distance, for both the maximization and minimization task.
+The second plot shows the percentage deviation of distance in EleNa routes compared to the ground-truth, for the same 50 data-points that we used in the first plot, but with a constraint of x=150%. It is clear from the plot that routes computed by EleNa do not exceed 150% of the ground truth distance, for both the maximization and minimization task.
+
+#### Visual evaluation
+The above module aids with a "qualitative" evalution of EleNa. However, a picture is worth a thousand words. For this reason, we decided to render the ground-truth path (queried using Google's Directions Service) alongside EleNa routes on the primary UI. For this purpose, we wrote the https://github.com/abhikdeb/cs520-project/blob/f5366f9908c9d8d289ede36ece03ae79ecad1681/EleNa/src/app/data_model/shortest_path.py#L117 API that computes the waypoints for the ground-truth route between any two points in the map. These waypoints are then rendered on the map in the main UI of EleNa, aiding the user to "visually" evaluate how EleNa performs.
