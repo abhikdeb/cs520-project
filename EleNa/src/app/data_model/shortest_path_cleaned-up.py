@@ -60,7 +60,7 @@ class Routing:
 
         # hardcoded: needs to be removed later
         start_loc = (42.432121, -72.4916)
-        end_loc = (42.31338, -72.4672)  # (42.3857, -72.5298)
+        end_loc = (42.31338, -72.4672) 
         self.set_start_end(start_loc, end_loc)
 
     def plot_route(self, route):
@@ -187,7 +187,6 @@ class Routing:
             optimal_path_dict = max(paths_found, key=lambda d: d['ele_gain'])
 
         print("time taken: ", time.time() - s)
-        print(opt_message)
 
         # Return the lowest elevation gain within max distance
         logs = {}
