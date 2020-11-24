@@ -11,7 +11,7 @@ You may want to literally go the extra mile if that saves you a couple thousand 
 Likewise, you may want to maximize elevation gain if you are looking for an intense yet time-constrained workout.
 
 
-For more information on the architecture and analysis read [this](EleNa/README.MD).
+For more about the architecture and evaluation, read [this](EleNa/README.MD)!
 
 
 ### Setup/Installation Instructions
