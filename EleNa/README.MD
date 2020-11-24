@@ -22,7 +22,7 @@ while limiting the total distance between the two locations to x% of the shortes
 
 Given below is a description of different components of our system
 
-![Plot 4](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/components.png)
+![Plot 1](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/components.png)
 
 --------------------------------------------------------
 
@@ -30,7 +30,16 @@ Given below is a description of different components of our system
 
 Given below is the high-level architecture of our approach
 
-![Plot 3](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/architecture.png)
+![Plot 2](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/architecture.png)
+
+--------------------------------------------------------
+
+
+### User Interface
+
+Given below is the sample interface of our application
+
+![Plot 3](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/user_interface.png)
 
 --------------------------------------------------------
 
@@ -51,8 +60,8 @@ The evaluation primarily does the following:
   - percentage deviation of distance in routes computed by EleNa compared to ground-truth
 
 Here are the plots following the evaluation of EleNa:
-![Plot 1](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/elevation_plot.png)
-![Plot 2](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/percentage_deviation_plot.png)
+![Plot 4](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/elevation_plot.png)
+![Plot 5](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/percentage_deviation_plot.png)
 
 The first plot shows the results for 50 data-points (both maximization and minimization task) - we see that EleNa performs quite well in both the maximization and minimization tasks. For maximization task, routes computed by EleNa result in an average elevation gain of ~8 meters. However, EleNa seems to perform, on average, better in the elevation minimizsation task, with ~15 meters reduction in elevation compared to the ground-truth.
 
