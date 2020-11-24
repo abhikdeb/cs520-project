@@ -3,13 +3,6 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from wtforms.validators import DataRequired, NumberRange
 
 
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
-
-
 class FieldsRequiredForm(FlaskForm):
     """Require all fields to have content. This works around the bug that WTForms radio
     fields don't honor the `DataRequired` or `InputRequired` validators.
