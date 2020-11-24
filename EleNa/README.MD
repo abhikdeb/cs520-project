@@ -1,30 +1,20 @@
 # EleNA : Elevation based Navigation
 
-### Description
+Given below is the interface of our application
 
-Existing navigation systems optimize for the shortest or fastest route. 
-However, they do not consider elevation gain. 
-Let’s say you are hiking or biking from one location to another. 
-You may want to literally go the extra mile if that saves you a couple thousand feet in elevation gain. 
-Likewise, you may want to maximize elevation gain if you are looking for an intense yet time-constrained workout.
-
-
-Given a start and an end location, a route that maximizes or minimizes elevation gain, 
-while limiting the total distance between the two locations to x% of the shortest path.
-
+![Plot 1](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/user_interface.png)
 
 ### Index
 
 1. [Components](#components)
 2. [Architecture](#architecture)
-3. [User Interface](#user-interface)
-4. [Evaluation](#evaluation)
+3. [Evaluation](#evaluation)
 
 ### Components
 
 Given below is a description of different components of our system
 
-![Plot 1](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/components.png)
+![Plot 2](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/components.png)
 
 --------------------------------------------------------
 
@@ -32,16 +22,7 @@ Given below is a description of different components of our system
 
 Given below is the high-level architecture of our approach
 
-![Plot 2](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/architecture.png)
-
---------------------------------------------------------
-
-
-### User Interface
-
-Given below is the sample interface of our application
-
-![Plot 3](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/user_interface.png)
+![Plot 3](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/architecture.png)
 
 --------------------------------------------------------
 
