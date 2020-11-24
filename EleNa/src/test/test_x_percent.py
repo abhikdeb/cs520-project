@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 class Evaluation:
 
-    def __init__(self, x=50, city_name='Amherst, MA'):
+    def __init__(self, x=1.5, city_name='Amherst, MA', n_tests=50):
         self.config = {}
         self.key = Config.API_KEY
 
@@ -29,10 +29,9 @@ class Evaluation:
         self.data_model = DataModel()
         self.graph = self.data_model.get_graph()
         print(self.data_model.get_stats())
-        self.num_tests = 50
-        self.x = 1.5
+        self.num_tests = n_tests
 
-        self.test_x_percent()
+        self.eval()
 
     def load_config(self, loc):
         try:
@@ -43,7 +42,7 @@ class Evaluation:
         else:
             cfg_file.close()
 
-    def test_x_percent(self):
+    def eval(self):
         # setup EleNa for evaluation purposes
         routing = Routing(self.data_model)
         nodes = self.graph.nodes()
@@ -73,26 +72,26 @@ class Evaluation:
             ground_truth = routes[0]["legs"][0]["distance"]["value"]
             print(json.dumps(routes, indent=4))
 
-            if ground_truth * self.x < log_min['best_path_dist_min']:
+            if ground_truth * self.x < log_min['optimal_path_dist']:
                 print("Elevation minimization task failed ground-truth verification for:")
                 self.dump_evalution_params()
                 print("\t From: ", from_node)
                 print("\t To: ", to_node)
                 # sys.exit("Error in verification. Exiting!")
 
-            if ground_truth * self.x < log_max['best_path_dist_max']:
+            if ground_truth * self.x < log_max['optimal_path_dist']:
                 print("Elevation maximization task failed ground-truth verification for:")
                 self.dump_evalution_params()
                 print("\t From: ", from_node)
                 print("\t To: ", to_node)
                 # sys.exit("Error in verification. Exiting!")
 
-            max_task_elev.append(log_max['best_path_gain_max'])
-            min_task_elev.append(log_min['best_path_gain_min'])
-            gt_elev.append(log_min['min_dist_grade'])
+            max_task_elev.append(log_max['optimal_path_gain'])
+            min_task_elev.append(log_min['optimal_path_gain'])
+            gt_elev.append(log_min['shortest_path_gain'])
 
-            max_task_dist_per.append(log_max['best_path_dist_max'] * 100 / ground_truth)
-            min_task_dist_per.append(log_min['best_path_dist_min'] * 100 / ground_truth)
+            max_task_dist_per.append(log_max['optimal_path_dist'] * 100 / ground_truth)
+            min_task_dist_per.append(log_min['optimal_path_dist'] * 100 / ground_truth)
 
         plt.scatter([i for i in range(self.num_tests)], max_task_elev, color='blue',
                     label='EleNa - elevation from maximization task', s=8)
