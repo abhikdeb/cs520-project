@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <title>EleNa - {{title}}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+<div class="container">
+    <h1 style="color:black;">EleNa - Elevation Based Navigation</h1>
+</div>
+<div class="topnav">
+    <a class="active" href="{{ url_for('index') }}">Home</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+</div>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<br>
+{% block content %}{% endblock %}
+</body>
+</html>
