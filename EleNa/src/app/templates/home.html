@@ -1,10 +1,14 @@
 <!DOCTYPE html>
+<!--suppress BadExpressionStatementJS -->
 <html>
 <head>
     <meta charset="utf-8">
     <meta content="initial-scale=1.0, user-scalable=no" name="viewport">
     <title>EleNa - {{ title }}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        let vars = JSON.parse(JSON.stringify({{ data|tojson }}));
+    </script>
     <link href="{{ url_for('static',filename='styles/stylesheet.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -20,7 +24,7 @@
                    placeholder="Choose starting point, or click on the map"
                    title="Choose starting point, or click on the map" type="text">
             <br>
-            <label class="search-label" for="destination">   Destination </label>
+            <label class="search-label" for="destination">Destination :</label>
             <input class="searchfield" id="destination" name="destination"
                    placeholder="Choose destination, or click on the map"
                    title="Choose destination, or click on the map" type="text">
@@ -43,30 +47,35 @@
     </div>
 </div>
 <script>
-    let map;
+    // Variable to store the rendered map
+    let map, mapOptions, directionsService, directionsDisplay, directionsDisplayGroundTruth;
 
     function initMap() {
-        var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer;
-        var directionsDisplayGroundTruth = new google.maps.DirectionsRenderer({polylineOptions: {strokeColor: "#DF013A"}});
 
-        var mapOptions = {
-            zoom: 15,
-            center: {lat: 42.3732, lng: -72.5199}
+        // Set Map options here
+        mapOptions = {
+            center: {lat: vars['lat'], lng: vars['lng']},
+            zoom: vars['zoom']
         };
 
+        // Initialize the map and set the services
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-        //Code to generate address from click
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer;
+        directionsDisplayGroundTruth = new google.maps.DirectionsRenderer({
+            polylineOptions: {
+                strokeColor: "#DF013A"
+            }
+        });
         directionsDisplay.setMap(map);
         directionsDisplayGroundTruth.setMap(map);
-        directionsDisplayGroundTruth.setOptions({suppressMarkers: true});
+        directionsDisplayGroundTruth.setOptions({
+            suppressMarkers: true
+        });
 
         let marker1, marker2;
         $("#submit").click(function () {
-
             $("body").css("cursor", "progress");
-
             var objective;
             var opt_type = document.getElementsByName('max-min');
             for (i = 0; i < opt_type.length; i++) {
@@ -74,14 +83,11 @@
                     objective = opt_type[i].value;
                 }
             }
-
             $.get("http://127.0.0.1:5000/submit" +
                 encodeURIComponent($("#source").val()) + ":" +
                 encodeURIComponent($("#destination").val()) + ":" +
                 encodeURIComponent($("#percent").val()) + ":" +
                 encodeURIComponent(objective)).done(function (data) {
-
-                // alert( "Data Loaded: " + data.waypoints);
                 elevation = data.elevation
                 distance = data.distance
                 waypoints = data.waypoints
@@ -89,30 +95,25 @@
                 groundTruthElevation = data.groundTruthElevation
                 groundTruthDistance = data.groundTruthDistance
                 upperLimit = data.upperLimit
-
-                calculateAndDisplayRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, waypoints, ground_truth);
-
+                renderOutputRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, waypoints, ground_truth);
                 if (marker1) {
                     marker1.setMap(null);
                 }
-
                 if (marker2) {
                     marker2.setMap(null);
                 }
-
                 $("body").css("cursor", "default");
             })
         });
 
         function placeMarker(location) {
-            var marker = new google.maps.Marker({
+            return new google.maps.Marker({
                 position: location,
                 map: map
             });
-            return marker;
         }
 
-        var geocoder = new google.maps.Geocoder();
+        let geocoder = new google.maps.Geocoder();
         google.maps.event.addListener(map, 'click', function (event) {
             geocoder.geocode({
                 'latLng': event.latLng
@@ -143,59 +144,31 @@
             });
         });
 
-        // Create the search box and link it to the UI element.
-        var input = document.getElementById('source');
-        var searchBox = new google.maps.places.SearchBox(input);
-        //
-        // // Bias the SearchBox results towards current map's viewport.
+        let source_input = document.getElementById('source');
+        let source_sb = new google.maps.places.SearchBox(source_input);
+
         map.addListener('bounds_changed', function () {
-            searchBox.setBounds(map.getBounds());
+            source_sb.setBounds(map.getBounds());
         });
 
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox.addListener('places_changed', function () {
-            var places = searchBox.getPlaces();
-
+        source_sb.addListener('places_changed', function () {
+            let places = source_sb.getPlaces();
             if (places.length == 0) {
+                console.debug('Empty places returned!');
                 return;
             }
-
-            // Clear out the old marker.
-            if (marker1){
+            if (marker1) {
                 marker1.setMap(null);
             }
-
-
-            // For each place, get the icon, name and location.
-            var bounds = new google.maps.LatLngBounds();
+            let bounds = new google.maps.LatLngBounds();
             places.forEach(function (place) {
                 if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
+                    console.debug('Empty geometry returned!');
                     return;
                 }
-
                 marker1 = placeMarker(place.geometry.location);
-                marker1.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
-
-                // var icon = {
-                //     url: place.icon,
-                //     size: new google.maps.Size(71, 71),
-                //     origin: new google.maps.Point(0, 0),
-                //     anchor: new google.maps.Point(17, 34),
-                //     scaledSize: new google.maps.Size(25, 25)
-                // };
-                //
-                // // Create a marker for each place.
-                // markers.push(new google.maps.Marker({
-                //     map: map,
-                //     icon: icon,
-                //     title: place.name,
-                //     position: place.geometry.location
-                // }));
-
+                marker1.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
                 if (place.geometry.viewport) {
-                    // Only geocodes have viewport.
                     bounds.union(place.geometry.viewport);
                 } else {
                     bounds.extend(place.geometry.location);
@@ -204,57 +177,29 @@
             map.fitBounds(bounds);
         });
 
-        // Create the search box and link it to the UI element.
-        var input1 = document.getElementById('destination');
-        var searchBox1 = new google.maps.places.SearchBox(input1);
-        //
-        // // Bias the SearchBox results towards current map's viewport.
+        let destination_input = document.getElementById('destination');
+        let destination_sb = new google.maps.places.SearchBox(destination_input);
         map.addListener('bounds_changed', function () {
-            searchBox1.setBounds(map.getBounds());
+            destination_sb.setBounds(map.getBounds());
         });
-        //
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox1.addListener('places_changed', function () {
-            var places1 = searchBox1.getPlaces();
-
+        destination_sb.addListener('places_changed', function () {
+            let places1 = destination_sb.getPlaces();
             if (places1.length == 0) {
+                console.debug('Empty places returned!');
                 return;
             }
-
-            // Clear out the old markers.
-            if (marker2){
+            if (marker2) {
                 marker2.setMap(null);
             }
-
-            // For each place, get the icon, name and location.
-            var bounds1 = new google.maps.LatLngBounds();
+            let bounds1 = new google.maps.LatLngBounds();
             places1.forEach(function (place) {
                 if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
+                    console.debug('Empty geometry returned!');
                     return;
                 }
-                // var icon = {
-                //     url: place.icon,
-                //     size: new google.maps.Size(71, 71),
-                //     origin: new google.maps.Point(0, 0),
-                //     anchor: new google.maps.Point(17, 34),
-                //     scaledSize: new google.maps.Size(25, 25)
-                // };
-
-                // Create a marker for each place.
-                // markers.push(new google.maps.Marker({
-                //     map: map,
-                //     icon: icon,
-                //     title: place.name,
-                //     position: place.geometry.location
-                // }));
-
                 marker2 = placeMarker(place.geometry.location);
                 marker2.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-
                 if (place.geometry.viewport) {
-                    // Only geocodes have viewport.
                     bounds1.union(place.geometry.viewport);
                 } else {
                     bounds1.extend(place.geometry.location);
@@ -264,17 +209,17 @@
         });
     }
 
-    function calculateAndDisplayRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, checkboxArray, groundTruth) {
-        var waypts = [];
-        for (var i = 1; i < checkboxArray.length - 1; i++) {
+    function renderOutputRoute(directionsService, directionsDisplay, directionsDisplayGroundTruth, checkboxArray, groundTruth) {
+        let waypts = [];
+        for (let i = 1; i < checkboxArray.length - 1; i++) {
             waypts.push({
                 location: new google.maps.LatLng(checkboxArray[i].Lat, checkboxArray[i].Long),
                 stopover: true
             });
         }
 
-        var waypts2 = [];
-        for (var i = 1; i < groundTruth.length - 1; i++) {
+        let waypts2 = [];
+        for (let i = 1; i < groundTruth.length - 1; i++) {
             waypts2.push({
                 location: new google.maps.LatLng(groundTruth[i].Lat, groundTruth[i].Long),
                 //stopover: true
@@ -296,8 +241,8 @@
                 // For each route, display summary information.
                 summaryPanel.innerHTML += '<p class="info-header"><b>Total Elevation Gain: </b><span class="info-value">' + elevation + '</span> m</p>';
                 summaryPanel.innerHTML += '<p class="info-header"><b>Total Distance: </b><span class="info-value">' + distance + '</span> m</p>';
-                summaryPanel.innerHTML += '<p class="info-header"><b>Google Maps Elevation Gain: </b><span class="info-value">' + groundTruthElevation + '</span> m</p>';
-                summaryPanel.innerHTML += '<p class="info-header"><b>Google Maps Distance: </b><span class="info-value">' + groundTruthDistance + '</span> m</p>';
+                summaryPanel.innerHTML += '<p class="info-header"><b>Shortest path Elevation Gain: </b><span class="info-value">' + groundTruthElevation + '</span> m</p>';
+                summaryPanel.innerHTML += '<p class="info-header"><b>Shortest Distance: </b><span class="info-value">' + groundTruthDistance + '</span> m</p>';
                 summaryPanel.innerHTML += '<p class="info-header"><b>X % of shortest distance: </b><span class="info-value">' + upperLimit + '</span> m</p>';
             } else {
                 window.alert('Directions request failed due to ' + status);
