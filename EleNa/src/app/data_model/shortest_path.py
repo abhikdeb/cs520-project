@@ -160,21 +160,22 @@ class Routing:
             Optimal path as a list of nodes
         """
 
+        path = nx.shortest_path(self.G, self.start, self.end, weight='length')
+        path_length, path_ele_gain, path_edge_keys = find_path_edges(self.G, path, 'length', 'min')
+        self.baseline_dict = {'path': path, 'length': path_length, 'ele_gain': path_ele_gain,
+                              'edge_keys': path_edge_keys}
+
         if mode == 'baseline':
-            path = nx.shortest_path(self.G, self.start, self.end, weight='length')
-            path_length, path_ele_gain, path_edge_keys = find_path_edges(self.G, path, 'length', 'min')
-            self.baseline_dict = {'path': path, 'length': path_length, 'ele_gain': path_ele_gain,
-                                  'edge_keys': path_edge_keys}
             logs = {}
             logs['distance'] = path_length
             logs['elevation_gain'] = path_ele_gain
             return path, logs
 
         elif mode == 'minimize':
-            return self.optimize_elevation_gain(1.9, self.baseline_dict, mode)
+            return self.optimize_elevation_gain(self.x, self.baseline_dict, mode)
 
         elif mode == 'maximize':
-            return self.optimize_elevation_gain(1.9, self.baseline_dict, mode)
+            return self.optimize_elevation_gain(self.x, self.baseline_dict, mode)
 
     def optimize_elevation_gain(self, x, baseline_dict, mode):
         """
