@@ -20,29 +20,17 @@ while limiting the total distance between the two locations to x% of the shortes
 
 ### Components
 
-1. DATA - Region graph (GoogleMaps/OpenStreetMap)
-2. Query/Extract from graph
+Given below is a description of different components of our system
 
---------------------------------------------------------
-
-
-- UI -> Inputs: start, end, x%, elevetion(Min/Max); Output: Maps
-- Geocoding Inputs () - searchable Inputs
-- Routing Algo (Graph, input_params) - A-Star, Djikstras, Heuristics
-- Render output path on Map and provide summary
-
+![Plot 4](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/components.png)
 
 --------------------------------------------------------
 
 ### Architecture
 
-1. Decoupled approach
-  - Web UI Server
-  - Back end service
+Given below is the high-level architecture of our approach
 
-
-2. Combined approach
-  - Entire Web framework
+![Plot 3](https://github.com/abhikdeb/cs520-project/blob/dev/EleNa/images/architecture.png)
 
 --------------------------------------------------------
 
