@@ -29,6 +29,7 @@ At the time this project was built, the following were the system specifications
 |OpenStreetMap API|0.16.1|`osmnx`|
 |GoogleMaps API|4.4.2|`googlemaps`|
 |PyTest|6.1.2|`pytest`|
+|PDoc3|0.9.1|`pdoc3`|
 
 
 Setup a new environment using the conda/venv package managers.
@@ -70,6 +71,7 @@ For Windows systems,
 ./RunElenaApp.bat
 ```
 
+Then follow the on-screen instructions to open the specified URL on a web browser to run the web application.
 
 ### Running the Tests
 
@@ -90,7 +92,7 @@ pytest
 
 [PyDoc3](https://pdoc3.github.io/pdoc/) is used to run the documentation service.
 
-The generated documentation of the code can be accessed [here](EleNa/docs/README.md) 
+The generated documentation of the code can be accessed [here](EleNa/docs/README.md) or in [HTML](EleNa/docs/documentation/EleNa/)
 
 Run the below to generate the documentation from the source code.
 
