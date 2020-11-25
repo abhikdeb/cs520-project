@@ -36,7 +36,7 @@ Setup a new environment using the conda/venv package managers.
 We show how to create an environment using conda:
 
 ```shell script
-conda create --name elena python=3.5
+conda create --name elena python=3.8.6
 ```
 
 This environment can now be activated by:
@@ -44,12 +44,13 @@ This environment can now be activated by:
 conda activate elena
 ```
 
-Install the required packages from the [requirements file](EleNa/docs/requirements.txt)
-
-```shell script
-conda install --file requirements.txt
-```
-
+Install the following packages:
+- [osmnx](https://osmnx.readthedocs.io/en/stable/#installation)
+- [googlemaps](https://pypi.org/project/googlemaps/)
+- [scipy](https://pypi.org/project/scipy/)
+- [flask](https://pypi.org/project/Flask/)
+- [flask-googlemaps](https://flask-googlemaps.com/installation/)
+- [flask-wtf](https://flask-wtf.readthedocs.io/en/stable/install.html)
 
 ### Running the app
 
@@ -58,6 +59,11 @@ conda install --file requirements.txt
 Before running the app, make sure the `PYTHONPATH` is set to the root directory of the project.
 
 Access [this](EleNa/scripts) folder for triggering the scripts to run the Flask API.
+From the root folder of the repository, run:
+
+```shell script
+cd EleNa/scripts
+```
 
 For Linux/Unix systems, 
 
